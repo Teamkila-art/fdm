@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('procurement', '0017_marchebc_motif_rejet_alter_marchebc_statut'),
+        ('procurement', '0018_update_etape_steps'),
     ]
 
     operations = [
@@ -35,15 +35,5 @@ class Migration(migrations.Migration):
             model_name='marchebc',
             name='statut',
             field=models.CharField(choices=[('en_attente_livraison', 'en attente de livraison'), ('receptionne_et_stocke', 'Réception et stockée'), ('refuse', 'refus (motif)')], db_index=True, default='en_attente_livraison', max_length=30),
-        ),
-        migrations.AlterField(
-            model_name='marcheetape',
-            name='nom_etape',
-            field=models.CharField(choices=[('marche_cree', 'marche_cree'), ('contrat_signe', 'contrat_signe'), ('en_attente_livraison', 'en_attente_livraison'), ('livraison_en_cours', 'livraison_en_cours'), ('receptionne_magasin', 'receptionne_magasin'), ('controle_qualite', 'controle_qualite'), ('bl_valide', 'bl_valide')], max_length=30),
-        ),
-        migrations.AlterField(
-            model_name='marcheetape',
-            name='ordre',
-            field=models.IntegerField(validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(7)]),
         ),
     ]
