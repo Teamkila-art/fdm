@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('procurement', '0018_marchebc_comite_conformite_marchebc_date_attribution_and_more'),
+        ('procurement', '0019_marchebc_comite_conformite_marchebc_date_attribution_and_more'),
         ('procurement', '0019_alter_stagingitem_categorie_fk'),
     ]
 
