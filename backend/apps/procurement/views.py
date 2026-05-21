@@ -217,10 +217,12 @@ class MarcheBCViewSet(viewsets.ModelViewSet):
 
     _ORDERED_ETAPES = [
         "marche_cree",
+        "contrat_signe",
         "en_attente_livraison",
         "livraison_en_cours",
         "receptionne_magasin",
         "controle_qualite",
+        "bl_valide",
         "stocker_au_magasin",
         "paiement_en_cours",
         "paiement_effectue",

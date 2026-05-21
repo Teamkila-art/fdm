@@ -12,17 +12,19 @@ import StagingClassificationTable from '../../components/procurement/StagingClas
 // ── Constants ────────────────────────────────────────────────────────────────
 
 const ORDERED_ETAPES = [
-  'marche_cree', 'en_attente_livraison', 'livraison_en_cours',
-  'receptionne_magasin', 'controle_qualite', 'stocker_au_magasin',
+  'marche_cree', 'contrat_signe', 'en_attente_livraison', 'livraison_en_cours',
+  'receptionne_magasin', 'controle_qualite', 'bl_valide', 'stocker_au_magasin',
   'paiement_en_cours', 'paiement_effectue',
 ];
 
 const ETAPE_LABELS = {
   marche_cree:          'Marché créé',
+  contrat_signe:        'Contrat signé',
   en_attente_livraison: 'En attente de livraison',
   livraison_en_cours:   'Livraison en cours',
   receptionne_magasin:  'Réceptionné au magasin',
   controle_qualite:     'Contrôle qualité',
+  bl_valide:            'Bon de livraison est validé',
   stocker_au_magasin:   'Stocker au magasin',
   paiement_en_cours:    'Paiement en cours',
   paiement_effectue:    'Paiement effectué',
@@ -388,8 +390,6 @@ export default function MarcheDetailPage() {
           <h3 style={{ ...sectionTitleStyle, marginBottom: 0 }}>Informations générales</h3>
           {!isFinanciere && !editInfos && (
             <button style={btnEdit} onClick={openEditInfos}>✏️ Modifier</button>
-          )}
-        </div>
           )}
         </div>
 
