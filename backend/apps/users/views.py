@@ -5,7 +5,7 @@ from django.utils.timezone import make_aware
 from rest_framework import permissions, viewsets
 
 from apps.alerts.models import JournalAudit
-from apps.core.permissions import IsAdmin
+from apps.core.permissions import IsAdmin, IsGestionnaireOrAdmin
 
 from .models import Batiment, Beneficiaire, Etablissement, Fournisseur, Role, Service, Utilisateur
 from .serializers import (
@@ -56,7 +56,7 @@ class EtablissementViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Etablissement.objects.all().order_by("nom")
 
 
-class BatimentViewSet(viewsets.ReadOnlyModelViewSet):
+class BatimentViewSet(viewsets.ModelViewSet):
     serializer_class = BatimentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -75,7 +75,7 @@ class ServiceViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
             return [permissions.IsAuthenticated()]
-        return [IsAdmin()]
+        return [IsGestionnaireOrAdmin()]
 
     def get_queryset(self):
         qs = Service.objects.select_related("id_batiment__id_etablissement").order_by("nom_service")
@@ -165,15 +165,12 @@ class JournalAuditViewSet(viewsets.ReadOnlyModelViewSet):
         qs = JournalAudit.objects.select_related("id_utilisateur", "id_utilisateur__id_role", "id_utilisateur__id_service").order_by("-date_action")
 
         utilisateur_id = self.request.query_params.get("id_utilisateur")
-        table_cible = self.request.query_params.get("table_cible")
         date_from = self.request.query_params.get("date_from")
         date_to = self.request.query_params.get("date_to")
         search = self.request.query_params.get("search")
 
         if utilisateur_id:
             qs = qs.filter(id_utilisateur_id=utilisateur_id)
-        if table_cible:
-            qs = qs.filter(table_cible__iexact=table_cible)
         if date_from:
             try:
                 dt_from = make_aware(datetime.fromisoformat(date_from)) if "T" in date_from else make_aware(datetime.fromisoformat(f"{date_from}T00:00:00"))
@@ -189,7 +186,6 @@ class JournalAuditViewSet(viewsets.ReadOnlyModelViewSet):
         if search:
             qs = qs.filter(
                 Q(type_action__icontains=search)
-                | Q(table_cible__icontains=search)
                 | Q(id_utilisateur__nom_complet__icontains=search)
             )
 

@@ -23,10 +23,10 @@ class StockInstantaneView(APIView):
     def get(self, request):
         consommables = (
             Ressource.objects.filter(
-                id_categorie__nom_categorie="Consommable",
-                id_categorie__actif=True,
+                id_type__nom_categorie="consommable",
+                id_type__actif=True,
             )
-            .select_related("id_categorie", "stock")
+            .select_related("id_type", "stock")
             .order_by("designation")
         )
         consommables_data = []
@@ -38,7 +38,7 @@ class StockInstantaneView(APIView):
                 {
                     "id": r.id_ressource,
                     "designation": r.designation,
-                    "categorie": r.id_categorie.nom_categorie,
+                    "categorie": r.id_type.nom_categorie,
                     "quantite_disponible": stock.quantite_disponible,
                     "seuil_alerte": stock.seuil_alerte,
                     "alerte": stock.seuil_alerte is not None and stock.quantite_disponible <= stock.seuil_alerte,
@@ -47,10 +47,10 @@ class StockInstantaneView(APIView):
 
         bien_inventaire = (
             Ressource.objects.filter(
-                id_categorie__nom_categorie="Bien Inventaire",
-                id_categorie__actif=True,
+                id_type__nom_categorie="bien_inventaire",
+                id_type__actif=True,
             )
-            .select_related("id_categorie")
+            .select_related("id_type")
             .annotate(
                 total_instances=Count("instanceressource__id_instance"),
                 nb_en_stock=Count(
@@ -76,7 +76,7 @@ class StockInstantaneView(APIView):
             {
                 "id": r.id_ressource,
                 "designation": r.designation,
-                "categorie": r.id_categorie.nom_categorie,
+                "categorie": r.id_type.nom_categorie,
                 "total_instances": r.total_instances,
                 "en_stock": r.nb_en_stock,
                 "en_service": r.nb_en_service,
@@ -176,13 +176,13 @@ class BilanAnnuelView(APIView):
 
         entrees_par_cat = list(
             mvt_qs.filter(type_mouvement="entree")
-            .values(categorie=F("id_ressource__id_categorie__nom_categorie"))
+            .values(categorie=F("id_ressource__id_type__nom_categorie"))
             .annotate(total=Sum("quantite"))
             .order_by("categorie")
         )
         sorties_par_cat = list(
             mvt_qs.filter(type_mouvement="sortie")
-            .values(categorie=F("id_ressource__id_categorie__nom_categorie"))
+            .values(categorie=F("id_ressource__id_type__nom_categorie"))
             .annotate(total=Sum("quantite"))
             .order_by("categorie")
         )
@@ -238,25 +238,10 @@ class DashboardView(APIView):
         for _ in range(11):
             start_month = (start_month.replace(day=1) - timedelta(days=1)).replace(day=1)
 
-        cons_alerts = Stock.objects.filter(
+        stock_alerts_count = Stock.objects.filter(
             seuil_alerte__isnull=False,
             quantite_disponible__lte=F("seuil_alerte"),
         ).count()
-        bi_alerts = (
-            Ressource.objects.filter(
-                id_categorie__nom_categorie="Bien Inventaire",
-                seuil_alerte__isnull=False,
-            )
-            .annotate(
-                instances_en_stock=Count(
-                    "instanceressource",
-                    filter=Q(instanceressource__statut="en_stock"),
-                )
-            )
-            .filter(instances_en_stock__lte=F("seuil_alerte"))
-            .count()
-        )
-        stock_alerts_count = cons_alerts + bi_alerts
 
         total_consommables = Stock.objects.aggregate(t=Sum("quantite_disponible"))["t"] or 0
         total_biens = InstanceRessource.objects.filter(statut="en_stock").count()
@@ -271,18 +256,18 @@ class DashboardView(APIView):
         
         total_articles_last_month = total_articles - entrees_ce_mois + sorties_ce_mois
 
-        demandes_en_cours = Demande.objects.filter(statut="en_attente").count()
+        demandes_en_cours = Demande.objects.filter(statut="en_cours").count()
         demandes_en_cours_last_month = Demande.objects.filter(
-            statut="en_attente",
+            statut="en_cours",
             date_demande__date__lt=current_month,
         ).count()
 
         consommables = (
             Ressource.objects.filter(
-                id_categorie__nom_categorie="Consommable",
-                id_categorie__actif=True,
+                id_type__nom_categorie="consommable",
+                id_type__actif=True,
             )
-            .select_related("id_categorie", "stock")
+            .select_related("id_type", "stock")
             .order_by("designation")
         )
         consommables_count = 0
@@ -303,8 +288,8 @@ class DashboardView(APIView):
             )
 
         bien_inventaire_count = Ressource.objects.filter(
-            id_categorie__nom_categorie="Bien Inventaire",
-            id_categorie__actif=True,
+            id_type__nom_categorie="bien_inventaire",
+            id_type__actif=True,
         ).count()
 
 
@@ -617,15 +602,15 @@ class DashboardSummaryView(APIView):
         from apps.returns.models import RetourMateriel    # noqa: PLC0415
 
         consommables_count = Ressource.objects.filter(
-            id_categorie__nom_categorie="Consommable",
-            id_categorie__actif=True,
+            id_type__nom_categorie="consommable",
+            id_type__actif=True,
         ).count()
         biens_count = Ressource.objects.filter(
-            id_categorie__nom_categorie="Bien Inventaire",
-            id_categorie__actif=True,
+            id_type__nom_categorie="bien_inventaire",
+            id_type__actif=True,
         ).count()
         alertes_actives_count = AlerteDelai.objects.filter(acquitte=False).count()
-        demandes_en_attente_count = Demande.objects.filter(statut="en_attente").count()
+        demandes_en_attente_count = Demande.objects.filter(statut="en_cours").count()
         retours_en_attente_count = RetourMateriel.objects.filter(statut="en_attente").count()
         imports_en_revision_count = ImportExcelBC.objects.filter(
             statut_import="en_revision"

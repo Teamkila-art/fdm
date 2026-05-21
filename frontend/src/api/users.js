@@ -23,15 +23,17 @@ export const getJournalAudit = (params = {}) => apiClient.get('/users/journal-au
 // ── Hierarchy endpoints ───────────────────────────────────────────────────
 export const getEtablissements = () => apiClient.get('/users/etablissements/');
 export const getBatiments = (params = {}) => apiClient.get('/users/batiments/', { params });
+export const createBatiment = (data) => apiClient.post('/users/batiments/', data);
+export const updateBatiment = (id, data) => apiClient.patch(`/users/batiments/${id}/`, data);
+export const deleteBatiment = (id) => apiClient.delete(`/users/batiments/${id}/`);
+export const createServiceJson = (data) => apiClient.post('/users/services/', data);
+export const updateServiceJson = (id, data) => apiClient.patch(`/users/services/${id}/`, data);
 export const getBeneficiaires = (params = {}) => apiClient.get('/users/beneficiaires/', { params });
 export const createBeneficiaire = (data) => apiClient.post('/users/beneficiaires/', data);
 export const updateBeneficiaire = (id, data) => apiClient.patch(`/users/beneficiaires/${id}/`, data);
 export const deleteBeneficiaire = (id) => apiClient.delete(`/users/beneficiaires/${id}/`);
 
-// ── Profile ───────────────────────────────────────────────────────────────
 export const getMyProfile = () => apiClient.get('/users/me/');
 export const updateMyProfile = (data) => apiClient.patch('/users/me/', data);
 
-// ── Personnel du service ──────────────────────────────────────────────────
-export const getPersonnelByService = (serviceId) =>
-  apiClient.get('/users/utilisateurs/', { params: { id_service: serviceId } });
+export const getPersonnelByService = (serviceId) => apiClient.get('/users/beneficiaires/', { params: { id_service: serviceId } });

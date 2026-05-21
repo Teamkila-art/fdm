@@ -1,7 +1,9 @@
 from django.db import models
 
+from apps.core.models import TimestampedModel
 
-class RetourMateriel(models.Model):
+
+class RetourMateriel(TimestampedModel):
     MOTIF_CHOICES = [
         ("panne", "panne"),
         ("inutilise", "inutilise"),
@@ -13,8 +15,7 @@ class RetourMateriel(models.Model):
         ("hors_service", "hors_service"),
         ("en_stock", "en_stock"),
         ("repare", "repare"),
-        ("non_repare", "non_repare"),
-        ("rebut", "rebut"),
+        ("debarras", "debarras"),
         ("reaffecte", "reaffecte"),
     ]
     STATUT_CHOICES = [
@@ -50,6 +51,13 @@ class RetourMateriel(models.Model):
         null=True,
         blank=True,
         related_name="retours_traites",
+    )
+    id_ligne_decharge_origine = models.ForeignKey(
+        "decharge.LigneDecharge",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="retours",
     )
 
     class Meta:

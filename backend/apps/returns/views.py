@@ -14,7 +14,7 @@ from .serializers import RetourMaterielSerializer
 
 # Maps motif → (instance.etat, instance.statut)
 _MOTIF_ETAT = {
-    "panne":      ("hors_service", "hors_service"),
+    "panne":      ("hors_service", "en_maintenance"),
     "inutilise":  ("retourne",     "en_stock"),
     "endommage":  ("endommage",    "en_maintenance"),
     "autre":      ("retourne",     "en_stock"),
@@ -87,7 +87,7 @@ class RetourMaterielViewSet(viewsets.ModelViewSet):
                     gestionnaire,
                     NotificationType.RETOUR_ENREGISTRE,
                     f"{nom} a enregistré un retour de '{designation}'.",
-                    objet_id=retour.pk,
+                    content_object=retour,
                     lien=f"/gestionnaire/retours/{retour.pk}/",
                 )
         except Exception:

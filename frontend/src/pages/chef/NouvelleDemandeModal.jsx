@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { getCategories, getSousCategories, getRessources } from '../../api/resources';
+import { getRessources } from '../../api/resources';
 import { createDemande } from '../../api/requests';
 import { getEtablissements, getBatiments, getServices, getBeneficiaires, getPersonnelByService } from '../../api/users';
 import { useAuthStore } from '../../store/authStore';
@@ -66,15 +66,13 @@ function toServiceId(user) {
 export default function NouvelleDemandeModal({ onClose, onCreated }) {
   const user = useAuthStore((state) => state.user);
 
-  const [urgence, setUrgence]                       = useState('normal');
-  const [justification, setJustification]           = useState('');
-  const [typeAcquisition, setTypeAcquisition]       = useState('consommable');
-  const [categorieId, setCategorieId]               = useState('');
-  const [sousCategorieId, setSousCategorieId]       = useState('');
+  const [urgence, setUrgence]                         = useState('normal');
+  const [justification, setJustification]             = useState('');
+  const [typeAcquisition, setTypeAcquisition]         = useState('consommable');
   const [selectedRessourceId, setSelectedRessourceId] = useState('');
-  const [quantiteDemandee, setQuantiteDemandee]     = useState(1);
-  const [lignes, setLignes]                         = useState([]);
-  const [formError, setFormError]                   = useState('');
+  const [quantiteDemandee, setQuantiteDemandee]       = useState(1);
+  const [lignes, setLignes]                           = useState([]);
+  const [formError, setFormError]                     = useState('');
 
   // ── Cascading hierarchy state ───────────────────────────────────────────
   const [selectedEtabId, setSelectedEtabId]           = useState('');
@@ -129,21 +127,15 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
   });
   const services = svcQuery.data?.data || [];
 
+  // ── Beneficiaires for user's service ────────────────────────────────────
   const benefQuery = useQuery({
-    queryKey: ['hierarchy', 'beneficiaires', selectedServiceId],
-    queryFn: () => getBeneficiaires({ id_service: selectedServiceId }),
-    enabled: Boolean(selectedServiceId),
+    queryKey: ['hierarchy', 'beneficiaires', userSvcId],
+    queryFn: () => getBeneficiaires({ id_service: userSvcId }),
+    enabled: Boolean(userSvcId),
     staleTime: 300_000,
   });
   const beneficiaires = benefQuery.data?.data || [];
 
-  // Helper accessors (camelCase from DRF camel-case renderer)
-  const _eId  = (e) => e.idEtablissement ?? e.id_etablissement;
-  const _eNom = (e) => e.nom;
-  const _bId  = (b) => b.idBatiment ?? b.id_batiment;
-  const _bNom = (b) => b.nom;
-  const _sId  = (s) => s.idService ?? s.id_service;
-  const _sNom = (s) => s.nomService ?? s.nom_service;
   const _benId   = (b) => b.idBeneficiaire ?? b.id_beneficiaire;
   const _benNom  = (b) => b.nom;
   const _benRole = (b) => b.roleType ?? b.role_type;
@@ -160,75 +152,32 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
   const isPersonnelBenef = selectedBenefId === 'personnel_group';
 
   // ── Data queries ────────────────────────────────────────────────────────
-  const categoriesQuery = useQuery({
-    queryKey: ['resources', 'categories'],
-    queryFn: getCategories,
-    staleTime: 30_000,
-  });
-  const categories = categoriesQuery.data?.data || [];
+  const _rId = (r) => r.idRessource ?? r.id_ressource;
 
-  const _catId  = (c) => c.idCategorie    ?? c.id_categorie;
-  const _catNom = (c) => c.nomCategorie   ?? c.nom_categorie;
-  const _scId   = (s) => s.idSousCategorie  ?? s.id_sous_categorie;
-  const _scNom  = (s) => s.nomSousCategorie ?? s.nom_sous_categorie;
-  const _rId    = (r) => r.idRessource    ?? r.id_ressource;
-
-  const parentCategorieId = useMemo(() => {
-    const target = typeAcquisition === 'consommable' ? 'Consommable' : 'Bien Inventaire';
-    const found  = categories.find((c) => _catNom(c) === target);
-    return found ? String(_catId(found)) : '';
-  }, [categories, typeAcquisition]); // eslint-disable-line react-hooks/exhaustive-deps
-
+  // Clear article when type changes
   useEffect(() => {
-    setCategorieId('');
-    setSousCategorieId('');
     setSelectedRessourceId('');
   }, [typeAcquisition]);
 
-  const rootsQuery = useQuery({
-    queryKey: ['resources', 'sous-categories', 'roots', parentCategorieId],
-    queryFn: () => getSousCategories({ id_categorie: parentCategorieId, roots_only: true }),
-    enabled: Boolean(parentCategorieId),
-  });
-  const rootSousCategories = rootsQuery.data?.data || [];
-
-  useEffect(() => {
-    setSelectedRessourceId('');
-    setSousCategorieId('');
-    if (!rootSousCategories.length) { setCategorieId(''); return; }
-    const found = rootSousCategories.some((s) => String(_scId(s)) === String(categorieId));
-    if (!found) setCategorieId(String(_scId(rootSousCategories[0])));
-  }, [rootSousCategories]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const childrenQuery = useQuery({
-    queryKey: ['resources', 'sous-categories', 'children', parentCategorieId, categorieId],
-    queryFn: () => getSousCategories({ id_categorie: parentCategorieId, parent: categorieId }),
-    enabled: typeAcquisition === 'bien_inventaire' && Boolean(parentCategorieId) && Boolean(categorieId),
-  });
-  const childSousCategories = childrenQuery.data?.data || [];
-
-  useEffect(() => {
-    if (typeAcquisition !== 'bien_inventaire') { setSousCategorieId(''); return; }
-    if (!childSousCategories.length) { setSousCategorieId(''); return; }
-    const found = childSousCategories.some((s) => String(_scId(s)) === String(sousCategorieId));
-    if (!found) setSousCategorieId(String(_scId(childSousCategories[0])));
-  }, [typeAcquisition, childSousCategories]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const effectiveSousCategorieId =
-    typeAcquisition === 'consommable' ? categorieId : (sousCategorieId || categorieId);
-
+  // Fetch articles filtered by selected type
   const ressourcesQuery = useQuery({
-    queryKey: ['resources', 'ressources', parentCategorieId, effectiveSousCategorieId],
-    queryFn: () => getRessources({ id_categorie: parentCategorieId, id_sous_categorie: effectiveSousCategorieId }),
-    enabled: Boolean(parentCategorieId) && Boolean(effectiveSousCategorieId),
+    queryKey: ['resources', 'ressources', 'by-type', typeAcquisition],
+    queryFn: () => getRessources({ type: typeAcquisition }),
+    staleTime: 30_000,
   });
   const ressources = ressourcesQuery.data?.data || [];
 
-  useEffect(() => {
-    if (!ressources.some((r) => String(_rId(r)) === String(selectedRessourceId))) {
-      setSelectedRessourceId('');
-    }
-  }, [ressources]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Derive category/sub-category from the selected article
+  const selectedRessource = useMemo(
+    () => ressources.find((r) => String(_rId(r)) === String(selectedRessourceId)) ?? null,
+    [ressources, selectedRessourceId], // eslint-disable-line react-hooks/exhaustive-deps
+  );
+  const autoCategorieNom = selectedRessource?.categorie?.nomCategorie
+    ?? selectedRessource?.categorie?.nom_categorie
+    ?? '';
+  const autoSousCategorieNom = selectedRessource?.sousCategorie?.nomSousCategorie
+    ?? selectedRessource?.sous_categorie?.nom_sous_categorie
+    ?? '';
 
   // ── Mutations ───────────────────────────────────────────────────────────
   const createMutation = useMutation({
@@ -270,8 +219,7 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
 
   async function handleSubmit() {
     setFormError('');
-    const serviceId = Number(selectedServiceId);
-    if (!serviceId) { setFormError('Veuillez sélectionner un service.'); return; }
+    if (!userSvcId) { setFormError('Votre compte n\'est pas associé à un service.'); return; }
     if (!selectedBenefId) { setFormError('Veuillez sélectionner un bénéficiaire.'); return; }
     if (!lignes.length) { setFormError('Ajoutez au moins une ligne.'); return; }
 
@@ -308,7 +256,7 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
       beneficiaire_nom: benefNom,
       beneficiaire_detail: benefDetail,
       justification,
-      id_service: serviceId,
+      id_service: userSvcId,
       id_beneficiaire: actualBenefId,
       lignes: lignes.map((l) => ({
         id_ressource: Number(l.id_ressource),
@@ -316,8 +264,6 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
       })),
     });
   }
-
-  const isBienInventaire = typeAcquisition === 'bien_inventaire';
 
   // ── Render ──────────────────────────────────────────────────────────────
   return (
@@ -354,7 +300,7 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
             </div>
           </section>
 
-          {/* Désignation du demandeur — cascading dropdowns */}
+          {/* Désignation du demandeur — auto-assigned from user profile */}
           <section style={sectionCardStyle}>
             <h3 style={sectionTitleStyle}>Désignation du demandeur</h3>
             <div style={row2Style}>
@@ -477,53 +423,43 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
             </div>
           </section>
 
-          {/* Catégorie */}
-          <section style={sectionCardStyle}>
-            <h3 style={sectionTitleStyle}>Catégorie</h3>
-            <div style={isBienInventaire ? row2Style : {}}>
-              <Field label="Catégorie" required>
-                <Select
-                  value={categorieId}
-                  onChange={(e) => { setCategorieId(e.target.value); setSousCategorieId(''); setSelectedRessourceId(''); }}
-                >
-                  {rootSousCategories.map((s) => (
-                    <option key={_scId(s)} value={_scId(s)}>{_scNom(s)}</option>
-                  ))}
-                </Select>
-              </Field>
-              {isBienInventaire && (
-                <Field label="Sous-catégorie">
-                  <Select
-                    value={sousCategorieId}
-                    onChange={(e) => { setSousCategorieId(e.target.value); setSelectedRessourceId(''); }}
-                    style={{ color: !categorieId ? C.textMuted : undefined }}
-                    disabled={!categorieId}
-                  >
-                    {childSousCategories.map((s) => (
-                      <option key={_scId(s)} value={_scId(s)}>{_scNom(s)}</option>
-                    ))}
-                  </Select>
-                </Field>
-              )}
-            </div>
-          </section>
-
           {/* Ajouter un article */}
           <section style={sectionCardStyle}>
             <h3 style={sectionTitleStyle}>Ajouter un article</h3>
-            <div style={addArticleRowStyle}>
-              <Field label="Article">
-                <Select
-                  value={selectedRessourceId}
-                  onChange={(e) => setSelectedRessourceId(e.target.value)}
-                  style={{ color: !selectedRessourceId ? C.textMuted : undefined }}
-                >
-                  <option value="">{"Sélectionner un article…"}</option>
-                  {ressources.map((r) => (
-                    <option key={_rId(r)} value={_rId(r)}>{r.designation}</option>
-                  ))}
-                </Select>
+            {/* Article dropdown */}
+            <Field label="Article">
+              <Select
+                value={selectedRessourceId}
+                onChange={(e) => setSelectedRessourceId(e.target.value)}
+                style={{ color: !selectedRessourceId ? C.textMuted : undefined }}
+              >
+                <option value="">{"Sélectionner un article…"}</option>
+                {ressources.map((r) => (
+                  <option key={_rId(r)} value={_rId(r)}>{r.designation}</option>
+                ))}
+              </Select>
+            </Field>
+            {/* Auto-populated Catégorie / Sous-catégorie */}
+            <div style={row2Style}>
+              <Field label="Catégorie">
+                <Input
+                  value={autoCategorieNom}
+                  readOnly
+                  placeholder="— auto —"
+                  style={{ color: autoCategorieNom ? C.textSecondary : C.textMuted, background: C.bgSubtle }}
+                />
               </Field>
+              <Field label="Sous-catégorie">
+                <Input
+                  value={autoSousCategorieNom}
+                  readOnly
+                  placeholder="— auto —"
+                  style={{ color: autoSousCategorieNom ? C.textSecondary : C.textMuted, background: C.bgSubtle }}
+                />
+              </Field>
+            </div>
+            {/* Quantité + Add button */}
+            <div style={addQtyRowStyle}>
               <Field label="Quantité">
                 <Input
                   type="number"
@@ -532,12 +468,12 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
                   onChange={(e) => setQuantiteDemandee(e.target.value)}
                 />
               </Field>
-              <button type="button" style={addBtnStyle} onClick={handleAddLigne}>
+              <button type="button" style={{ ...addBtnStyle, alignSelf: 'end' }} onClick={handleAddLigne}>
                 + Ajouter
               </button>
             </div>
-            {Boolean(parentCategorieId) && Boolean(effectiveSousCategorieId) && !ressources.length && (
-              <p style={emptyHintStyle}>Aucun article disponible dans cette catégorie.</p>
+            {!ressources.length && (
+              <p style={emptyHintStyle}>Aucun article disponible pour ce type.</p>
             )}
           </section>
 
@@ -746,6 +682,13 @@ const chipStyle = (active) => ({
 const addArticleRowStyle = {
   display: 'grid',
   gridTemplateColumns: '1fr 5rem auto',
+  gap: '0.75rem',
+  alignItems: 'end',
+};
+
+const addQtyRowStyle = {
+  display: 'grid',
+  gridTemplateColumns: '5rem auto',
   gap: '0.75rem',
   alignItems: 'end',
 };

@@ -112,7 +112,7 @@ export default function AppLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-[#F0F2F5] text-ink">
+    <div className="flex h-screen bg-white text-ink">
       <aside
         style={{
           width: 220,
@@ -254,7 +254,7 @@ export default function AppLayout() {
         style={{
           flex: 1,
           overflowY: 'auto',
-          background: '#F0F2F5',
+          background: '#ffffff',
           display: 'flex',
           flexDirection: 'column',
         }}

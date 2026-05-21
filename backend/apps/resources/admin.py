@@ -7,13 +7,21 @@ from .models import (
     Ressource,
     SousCategorie,
     Stock,
+    TypeArticle,
 )
+
+
+@admin.register(TypeArticle)
+class TypeArticleAdmin(admin.ModelAdmin):
+    list_display = ["nom_categorie", "actif"]
+    list_filter = ["actif"]
 
 
 @admin.register(Categorie)
 class CategorieAdmin(admin.ModelAdmin):
-    list_display = ["nom_categorie", "actif"]
-    list_filter = ["actif"]
+    list_display = ["nom_categorie", "id_type", "actif"]
+    list_filter = ["id_type", "actif"]
+    search_fields = ["nom_categorie"]
 
 
 @admin.register(SousCategorie)
@@ -24,14 +32,14 @@ class SousCategorieAdmin(admin.ModelAdmin):
 
 @admin.register(Ressource)
 class RessourceAdmin(admin.ModelAdmin):
-    list_display = ["designation", "id_categorie", "id_sous_categorie", "unite_mesure"]
-    list_filter = ["id_categorie"]
+    list_display = ["designation", "id_type", "id_categorie", "id_sous_categorie", "unite_mesure"]
+    list_filter = ["id_type", "id_categorie"]
     search_fields = ["designation"]
 
 
 @admin.register(Stock)
 class StockAdmin(admin.ModelAdmin):
-    list_display = ["id_ressource", "quantite_disponible", "seuil_alerte", "date_mise_a_jour"]
+    list_display = ["id_ressource", "quantite_disponible", "seuil_alerte", "updated_at"]
     search_fields = ["id_ressource__designation"]
 
 

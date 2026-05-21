@@ -8,35 +8,34 @@ from .models import (
     Ressource,
     SousCategorie,
     Stock,
+    TypeArticle,
 )
 from .utils import normalize_key, normalize_sous_categorie_name
 
 
-class CategorieSerializer(serializers.ModelSerializer):
-    is_consommable = serializers.SerializerMethodField()
+class TypeArticleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TypeArticle
+        fields = ["id_type_article", "nom_categorie", "description", "actif"]
+        read_only_fields = ["id_type_article"]
 
-    def get_is_consommable(self, obj):
-        return obj.nom_categorie == "Consommable"
+
+class CategorieSerializer(serializers.ModelSerializer):
+    type_article = TypeArticleSerializer(source="id_type", read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Categorie
-        fields = ["id_categorie", "nom_categorie", "description", "actif", "is_consommable"]
+        fields = ["id_categorie", "nom_categorie", "description", "actif", "id_type", "type_article", "updated_at"]
 
 
 class SousCategorieSerializer(serializers.ModelSerializer):
-    has_children = serializers.SerializerMethodField()
-
-    def get_has_children(self, obj):
-        return obj.children.exists()
-
     class Meta:
         model = SousCategorie
         fields = [
             "id_sous_categorie",
             "nom_sous_categorie",
             "id_categorie",
-            "id_parent_sous_categorie",
-            "has_children",
         ]
 
     def validate(self, attrs):
@@ -74,29 +73,37 @@ class SousCategorieSerializer(serializers.ModelSerializer):
 
 
 class RessourceSerializer(serializers.ModelSerializer):
+    type_article = TypeArticleSerializer(source="id_type", read_only=True)
     categorie = CategorieSerializer(source="id_categorie", read_only=True)
     sous_categorie = SousCategorieSerializer(source="id_sous_categorie", read_only=True)
     is_consommable = serializers.BooleanField(read_only=True)
     is_bien_inventaire = serializers.BooleanField(read_only=True)
+    instances_en_stock = serializers.IntegerField(read_only=True)
     est_en_alerte = serializers.SerializerMethodField()
 
     def get_est_en_alerte(self, obj):
-        if obj.seuil_alerte is None:
+        if not obj.is_consommable:
             return False
-        count = getattr(obj, "instances_en_stock", None)
-        if count is None:
-            count = obj.instanceressource_set.filter(statut="en_stock").count()
-        return count <= obj.seuil_alerte
+        try:
+            stock = obj.stock
+        except Exception:
+            return False
+        if stock.seuil_alerte is None:
+            return False
+        return stock.quantite_disponible <= stock.seuil_alerte
 
     class Meta:
         model = Ressource
         fields = [
             "id_ressource",
             "designation",
+            "marque",
             "description",
             "unite_mesure",
-            "seuil_alerte",
             "est_en_alerte",
+            "instances_en_stock",
+            "id_type",
+            "type_article",
             "id_categorie",
             "categorie",
             "id_sous_categorie",
@@ -120,9 +127,9 @@ class StockSerializer(serializers.ModelSerializer):
             "quantite_reelle",
             "seuil_alerte",
             "est_en_alerte",
-            "date_mise_a_jour",
+            "updated_at",
         ]
-        read_only_fields = ["id_stock", "date_mise_a_jour", "quantite_reelle"]
+        read_only_fields = ["id_stock", "updated_at", "quantite_reelle"]
 
 
 class _EtablissementBriefSerializer(serializers.Serializer):
@@ -130,11 +137,15 @@ class _EtablissementBriefSerializer(serializers.Serializer):
     nom = serializers.CharField()
 
 
-class _ServiceBriefSerializer(serializers.Serializer):
-    """Minimal read-only representation of a Service (id + nom_service)."""
+class _BatimentBriefSerializer(serializers.Serializer):
+    id_batiment = serializers.IntegerField()
+    nom = serializers.CharField()
 
+
+class _ServiceBriefSerializer(serializers.Serializer):
     id_service = serializers.IntegerField()
     nom_service = serializers.CharField()
+    id_batiment = _BatimentBriefSerializer(read_only=True)
 
 
 class _BeneficiaireBriefSerializer(serializers.Serializer):
@@ -206,7 +217,6 @@ class InstanceRessourceSerializer(serializers.ModelSerializer):
     def get_date_acquisition_display(self, obj):
         if obj.date_acquisition:
             return obj.date_acquisition
-
         lot = getattr(obj, "id_lot", None)
         marche = getattr(lot, "id_marche", None) if lot else None
         if marche and marche.date_creation:
