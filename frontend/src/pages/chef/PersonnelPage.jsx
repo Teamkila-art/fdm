@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../../store/authStore';
-import { getBeneficiaires, createBeneficiaire, updateBeneficiaire, deleteBeneficiaire } from '../../api/users';
+import { getBeneficiaires, createBeneficiaire, updateBeneficiaire, deleteBeneficiaire, getTypesBeneficiaire } from '../../api/users';
 
 // ── Design tokens ─────────────────────────────────────────────────────────
 const C = {
@@ -27,8 +27,9 @@ const ROLE_LABELS = {
   prof:           'Prof',
   personnel:      'Personnel',
 };
-
-const ROLE_OPTIONS = Object.entries(ROLE_LABELS);
+function getTypeLabel(nom) {
+  return ROLE_LABELS[nom] || nom || '—';
+}
 
 export default function PersonnelPage() {
   const user = useAuthStore((s) => s.user);
@@ -39,7 +40,7 @@ export default function PersonnelPage() {
   const [showForm, setShowForm] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [nom, setNom] = useState('');
-  const [roleType, setRoleType] = useState('personnel');
+  const [id_type_beneficiaire, setIdTypeBeneficiaire] = useState('');
   const [formError, setFormError] = useState('');
 
   const benefQuery = useQuery({
@@ -49,6 +50,13 @@ export default function PersonnelPage() {
     staleTime: 30_000,
   });
   const beneficiaires = benefQuery.data?.data || [];
+
+  const typesQuery = useQuery({
+    queryKey: ['chef', 'types-beneficiaire'],
+    queryFn: () => getTypesBeneficiaire(),
+    staleTime: 60_000,
+  });
+  const typesBeneficiaire = typesQuery.data?.data || [];
 
   const createMut = useMutation({
     mutationFn: createBeneficiaire,
@@ -71,7 +79,7 @@ export default function PersonnelPage() {
   function openCreate() {
     setEditItem(null);
     setNom('');
-    setRoleType('personnel');
+    setIdTypeBeneficiaire('');
     setFormError('');
     setShowForm(true);
   }
@@ -79,7 +87,7 @@ export default function PersonnelPage() {
   function openEdit(item) {
     setEditItem(item);
     setNom(item.nom);
-    setRoleType(item.roleType ?? item.role_type ?? 'personnel');
+    setIdTypeBeneficiaire(String(item.id_type_beneficiaire ?? item.idTypeBeneficiaire ?? ''));
     setFormError('');
     setShowForm(true);
   }
@@ -88,7 +96,7 @@ export default function PersonnelPage() {
     setShowForm(false);
     setEditItem(null);
     setNom('');
-    setRoleType('personnel');
+    setIdTypeBeneficiaire('');
     setFormError('');
   }
 
@@ -96,7 +104,8 @@ export default function PersonnelPage() {
     e.preventDefault();
     setFormError('');
     if (!nom.trim()) { setFormError('Le nom est requis.'); return; }
-    const payload = { nom: nom.trim(), role_type: roleType, id_service: serviceId };
+    if (!id_type_beneficiaire) { setFormError('Le type de bénéficiaire est requis.'); return; }
+    const payload = { nom: nom.trim(), id_type_beneficiaire: Number(id_type_beneficiaire), id_service: serviceId };
     if (editItem) {
       const id = editItem.idBeneficiaire ?? editItem.id_beneficiaire;
       updateMut.mutate({ id, data: payload });
@@ -162,9 +171,10 @@ export default function PersonnelPage() {
             </label>
             <label style={{ display: 'grid', gap: 5 }}>
               <span style={labelStyle}>Type / Rôle</span>
-              <select style={inputStyle} value={roleType} onChange={(e) => setRoleType(e.target.value)}>
-                {ROLE_OPTIONS.map(([val, label]) => (
-                  <option key={val} value={val}>{label}</option>
+              <select style={inputStyle} value={id_type_beneficiaire} onChange={(e) => setIdTypeBeneficiaire(e.target.value)}>
+                <option value="">-- Choisir un type --</option>
+                {typesBeneficiaire.map((t) => (
+                  <option key={t.id_type_beneficiaire} value={t.id_type_beneficiaire}>{getTypeLabel(t.nom)}</option>
                 ))}
               </select>
             </label>
@@ -189,7 +199,7 @@ export default function PersonnelPage() {
 
       {/* ── Table ── */}
       <div style={tableShell}>
-        {benefQuery.isLoading ? (
+        {benefQuery.isLoading || typesQuery.isLoading ? (
           <div style={{ padding: 20 }}>
             <div style={{ height: 120, borderRadius: C.radiusSm, background: C.bgSubtle }} />
           </div>
@@ -209,7 +219,7 @@ export default function PersonnelPage() {
             <tbody>
               {beneficiaires.map((b) => {
                 const bid = b.idBeneficiaire ?? b.id_beneficiaire;
-                const bRole = b.roleType ?? b.role_type;
+                const bRole = b.type_beneficiaire_display?.nom;
                 return (
                   <tr key={bid} style={{ borderTop: `1px solid ${C.border}` }}>
                     <td style={tdStyle}>{b.nom}</td>
@@ -221,7 +231,7 @@ export default function PersonnelPage() {
                         color: bRole === 'personnel' ? '#1e3a8a' : '#475569',
                         border: `1px solid ${bRole === 'personnel' ? '#93c5fd' : '#cbd5e1'}`,
                       }}>
-                        {ROLE_LABELS[bRole] || bRole}
+                        {getTypeLabel(bRole)}
                       </span>
                     </td>
                     <td style={{ ...tdStyle, textAlign: 'right' }}>

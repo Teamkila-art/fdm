@@ -14,6 +14,13 @@ from apps.users.models import Utilisateur
 
 @app.task(queue="alerts")
 def check_marche_deadlines():
+    """
+    Periodic task that checks procurement delivery deadlines and creates
+    alerts based on the acquisition type:
+      - marché        → warning at 10 days, critique at 5 days
+      - bon_commande  → warning at 3 days,  critique at 1 day
+      - donation      → no deadline alerts (immediate delivery)
+    """
     today = date.today()
     gestionnaires = Utilisateur.objects.filter(id_role__nom_role="gestionnaire_magasin", actif=True)
     financiers = Utilisateur.objects.filter(id_role__nom_role="service_financiere", actif=True)
@@ -21,38 +28,27 @@ def check_marche_deadlines():
     destinataires_fin = list(financiers.values_list("email", flat=True))
     destinataires_all = list(set(destinataires_gest + destinataires_fin))
 
-    marches = MarcheBC.objects.filter(statut="en_attente_livraison")
+    # Alert thresholds per type: (warning_days, critique_days)
+    ALERT_THRESHOLDS = {
+        "marche":       (10, 5),
+        "bon_commande": (3,  1),
+    }
+
+    marches = MarcheBC.objects.filter(
+        statut="en_attente_livraison",
+        date_livraison_prevue__isnull=False,
+    ).exclude(type_acquisition="donation")
+
     for marche in marches:
         jours_restants = (marche.date_livraison_prevue - today).days
+        warning_days, critique_days = ALERT_THRESHOLDS.get(
+            marche.type_acquisition, (10, 5)
+        )
+        type_label = "marché" if marche.type_acquisition == "marche" else "bon de commande"
         alerte_kwargs = {"id_marche": marche}
-        if jours_restants <= 7 and jours_restants > 0:
-            alerte, created = AlerteDelai.objects.get_or_create(
-                niveau_alerte="critique",
-                penalite_applicable=False,
-                acquitte=False,
-                defaults={"date_echeance": marche.date_livraison_prevue, **alerte_kwargs},
-                **alerte_kwargs
-            )
-            subject = f"[FMPDF] Alerte délai — {marche.reference} ({jours_restants}j restants)"
-            context = {"marche": marche, "jours_restants": jours_restants}
-            send_alert_email(destinataires_all, subject, context)
-        elif jours_restants <= 14 and jours_restants > 7:
-            alerte, created = AlerteDelai.objects.get_or_create(
-                niveau_alerte="warning",
-                penalite_applicable=False,
-                acquitte=False,
-                defaults={"date_echeance": marche.date_livraison_prevue, **alerte_kwargs},
-                **alerte_kwargs
-            )
-            for user in gestionnaires:
-                create_notification(
-                    user,
-                    NotificationType.ALERTE_STOCK,
-                    f"Le marché {marche.reference} approche de sa date limite de livraison.",
-                    content_object=marche,
-                    lien=f"/gestionnaire/marches/{marche.pk}",
-                )
-        elif jours_restants < 0:
+
+        if jours_restants < 0:
+            # ── Overdue ──
             alerte, created = AlerteDelai.objects.get_or_create(
                 niveau_alerte="critique",
                 penalite_applicable=True,
@@ -63,6 +59,42 @@ def check_marche_deadlines():
             subject = f"[FMPDF] URGENCE: Délai dépassé — {marche.reference}"
             context = {"marche": marche, "jours_restants": jours_restants}
             send_alert_email(destinataires_all, subject, context)
+
+        elif jours_restants <= critique_days:
+            # ── Critical zone ──
+            alerte, created = AlerteDelai.objects.get_or_create(
+                niveau_alerte="critique",
+                penalite_applicable=False,
+                acquitte=False,
+                defaults={"date_echeance": marche.date_livraison_prevue, **alerte_kwargs},
+                **alerte_kwargs
+            )
+            subject = (
+                f"[FMPDF] Alerte délai — {marche.reference} "
+                f"({jours_restants}j restants, {type_label})"
+            )
+            context = {"marche": marche, "jours_restants": jours_restants}
+            send_alert_email(destinataires_all, subject, context)
+
+        elif jours_restants <= warning_days:
+            # ── Warning zone ──
+            alerte, created = AlerteDelai.objects.get_or_create(
+                niveau_alerte="warning",
+                penalite_applicable=False,
+                acquitte=False,
+                defaults={"date_echeance": marche.date_livraison_prevue, **alerte_kwargs},
+                **alerte_kwargs
+            )
+            for user in gestionnaires:
+                create_notification(
+                    user,
+                    NotificationType.ALERTE_DELAI,
+                    f"Le {type_label} {marche.reference} arrive à échéance "
+                    f"dans {jours_restants} jour(s).",
+                    content_object=marche,
+                    lien=f"/gestionnaire/marches/{marche.pk}",
+                )
+
 
 @app.task(queue="alerts")
 def send_notification_email(notification_id: int):

@@ -11,6 +11,8 @@ from .models import (
     Role,
     RolePermission,
     Service,
+    TypeBeneficiaire,
+    TypeService,
     Utilisateur,
 )
 
@@ -48,13 +50,28 @@ class BatimentSerializer(serializers.ModelSerializer):
         fields = ["id_batiment", "nom", "id_etablissement"]
 
 
+class TypeServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TypeService
+        fields = ["id_type_service", "nom"]
+
+
+class TypeBeneficiaireSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TypeBeneficiaire
+        fields = ["id_type_beneficiaire", "nom"]
+
+
 class ServiceSerializer(serializers.ModelSerializer):
+    type_service_display = TypeServiceSerializer(source="id_type_service", read_only=True)
+
     class Meta:
         model = Service
         fields = [
             "id_service",
             "nom_service",
-            "type_service",
+            "id_type_service",
+            "type_service_display",
             "description",
             "lettre_nomination_chef",
             "id_batiment",
@@ -62,9 +79,11 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
 class BeneficiaireSerializer(serializers.ModelSerializer):
+    type_beneficiaire_display = TypeBeneficiaireSerializer(source="id_type_beneficiaire", read_only=True)
+
     class Meta:
         model = Beneficiaire
-        fields = ["id_beneficiaire", "nom", "role_type", "id_service"]
+        fields = ["id_beneficiaire", "nom", "id_type_beneficiaire", "type_beneficiaire_display", "id_service"]
 
 
 class FournisseurSerializer(serializers.ModelSerializer):

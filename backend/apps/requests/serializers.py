@@ -71,11 +71,16 @@ class _ServiceBriefSerializer(serializers.Serializer):
 
 
 class _BeneficiaireBriefSerializer(serializers.Serializer):
-    """Read-only: {id_beneficiaire, nom, role_type}."""
+    """Read-only: {id_beneficiaire, nom, type_beneficiaire}."""
 
     id_beneficiaire = serializers.IntegerField()
     nom = serializers.CharField()
-    role_type = serializers.CharField()
+    type_beneficiaire = serializers.SerializerMethodField()
+
+    def get_type_beneficiaire(self, obj):
+        if obj.id_type_beneficiaire:
+            return obj.id_type_beneficiaire.nom
+        return None
 
 
 # ---------------------------------------------------------------------------

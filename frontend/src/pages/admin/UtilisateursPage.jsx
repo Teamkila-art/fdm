@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   createUtilisateur,
+  getBatiments,
+  getEtablissements,
   getFournisseurs,
   getRoles,
   getServices,
@@ -29,6 +31,7 @@ function normalizeService(raw) {
     nom_service: raw.nom_service ?? raw.nomService ?? '',
     type_service: raw.type_service ?? raw.typeService ?? '',
     description: raw.description ?? '',
+    id_batiment: raw.id_batiment ?? raw.idBatiment ?? '',
   };
 }
 
@@ -64,6 +67,8 @@ export default function UtilisateursPage() {
   const rolesQuery = useQuery({ queryKey: ['users', 'roles'], queryFn: () => getRoles(), staleTime: 300000 });
   const servicesQuery = useQuery({ queryKey: ['users', 'services'], queryFn: () => getServices(), staleTime: 300000 });
   const fournisseursQuery = useQuery({ queryKey: ['users', 'fournisseurs'], queryFn: () => getFournisseurs(), staleTime: 300000 });
+  const etablissementsQuery = useQuery({ queryKey: ['users', 'etablissements'], queryFn: () => getEtablissements(), staleTime: 300000 });
+  const batimentsQuery = useQuery({ queryKey: ['users', 'batiments'], queryFn: () => getBatiments(), staleTime: 300000 });
 
   const createMutation = useMutation({
     mutationFn: createUtilisateur,
@@ -94,6 +99,8 @@ export default function UtilisateursPage() {
     () => (fournisseursQuery.data?.data || []).map(normalizeFournisseur).filter((item) => item?.id_fournisseur),
     [fournisseursQuery.data?.data]
   );
+  const etablissements = useMemo(() => etablissementsQuery.data?.data || [], [etablissementsQuery.data?.data]);
+  const batiments = useMemo(() => batimentsQuery.data?.data || [], [batimentsQuery.data?.data]);
 
   const roleById = useMemo(() => new Map(roles.map((item) => [String(item.id_role), item])), [roles]);
   const serviceById = useMemo(() => new Map(services.map((item) => [String(item.id_service), item])), [services]);
@@ -264,6 +271,8 @@ export default function UtilisateursPage() {
           roles={roles}
           services={services}
           fournisseurs={fournisseurs}
+          etablissements={etablissements}
+          batiments={batiments}
           existingUsers={tableRows}
           isSubmitting={createMutation.isPending || updateMutation.isPending}
           onSubmit={submitForm}

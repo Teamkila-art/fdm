@@ -55,6 +55,30 @@ class RolePermission(models.Model):
         return f"{self.id_role} - {self.id_permission}"
 
 
+class TypeService(models.Model):
+    id_type_service = models.AutoField(primary_key=True)
+    nom = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        verbose_name = "type de service"
+        verbose_name_plural = "types de service"
+
+    def __str__(self):
+        return self.nom
+
+
+class TypeBeneficiaire(models.Model):
+    id_type_beneficiaire = models.AutoField(primary_key=True)
+    nom = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        verbose_name = "type de bénéficiaire"
+        verbose_name_plural = "types de bénéficiaire"
+
+    def __str__(self):
+        return self.nom
+
+
 class Etablissement(models.Model):
     id_etablissement = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=200, unique=True)
@@ -84,19 +108,15 @@ class Batiment(models.Model):
 
 
 class Service(SoftDeleteModel):
-    TYPE_SERVICE_CHOICES = [
-        ("administratif", "administratif"),
-        ("chu", "chu"),
-        ("decanat", "decanat"),
-        ("pharmacie", "pharmacie"),
-        ("dentaire", "dentaire"),
-        ("labo", "labo"),
-        ("association", "association"),
-    ]
-
     id_service = models.AutoField(primary_key=True)
     nom_service = models.CharField(max_length=200)
-    type_service = models.CharField(max_length=100, choices=TYPE_SERVICE_CHOICES)
+    id_type_service = models.ForeignKey(
+        TypeService,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="services",
+    )
     description = models.TextField(blank=True)
     lettre_nomination_chef = models.FileField(
         upload_to="services/nominations/",
@@ -120,18 +140,15 @@ class Service(SoftDeleteModel):
 
 
 class Beneficiaire(SoftDeleteModel):
-    ROLE_CHOICES = [
-        ("chef_service", "Chef de Service"),
-        ("fonctionnaire", "Fonctionnaire"),
-        ("secretariat", "Secrétariat"),
-        ("salle_de_cours", "Salle de cours"),
-        ("prof", "Prof"),
-        ("personnel", "Personnel"),
-    ]
-
     id_beneficiaire = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=200)
-    role_type = models.CharField(max_length=30, choices=ROLE_CHOICES)
+    id_type_beneficiaire = models.ForeignKey(
+        TypeBeneficiaire,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="beneficiaires",
+    )
     id_service = models.ForeignKey(
         Service, on_delete=models.CASCADE, related_name="beneficiaires"
     )
@@ -141,7 +158,8 @@ class Beneficiaire(SoftDeleteModel):
         verbose_name_plural = "bénéficiaires"
 
     def __str__(self):
-        return f"{self.nom} ({self.get_role_type_display()})"
+        type_name = self.id_type_beneficiaire.nom if self.id_type_beneficiaire else "—"
+        return f"{self.nom} ({type_name})"
 
 
 class UtilisateurManager(BaseUserManager):

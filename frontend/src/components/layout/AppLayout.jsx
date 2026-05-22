@@ -18,6 +18,8 @@ import {
   Tag,
   LogOut,
   Bell,
+  Building,
+  Sliders,
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import NotificationBell from './NotificationBell';
@@ -56,8 +58,10 @@ const sidebarConfig = {
   admin: [
     { label: 'Utilisateurs', path: '/admin/utilisateurs', icon: Users },
     { label: 'Services', path: '/admin/services', icon: Settings },
+    { label: 'Bâtiments', path: '/admin/batiments', icon: Building },
     { label: 'Catégories', path: '/admin/categories', icon: Tag },
-    { label: 'Journal', path: '/admin/audit', icon: Database },
+    { label: 'Bénéficiaires', path: '/admin/beneficiaires', icon: Users },
+    { label: 'Types', path: '/admin/types', icon: Sliders },
   ],
 };
 
@@ -85,7 +89,10 @@ const PAGE_TITLES = {
   '/chef/profil': 'Profil',
   '/admin/utilisateurs': 'Utilisateurs',
   '/admin/services': 'Services',
+  '/admin/batiments': 'Bâtiments',
   '/admin/categories': 'Catégories',
+  '/admin/beneficiaires': 'Bénéficiaires',
+  '/admin/types': 'Types Dynamiques',
   '/admin/journal': 'Journal',
 };
 

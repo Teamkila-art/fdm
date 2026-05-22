@@ -138,7 +138,7 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
 
   const _benId   = (b) => b.idBeneficiaire ?? b.id_beneficiaire;
   const _benNom  = (b) => b.nom;
-  const _benRole = (b) => b.roleType ?? b.role_type;
+  const _benRole = (b) => b.type_beneficiaire_display?.nom ?? b.roleType ?? b.role_type;
 
   // Split beneficiaries into personnel and non-personnel
   const nonPersonnelBeneficiaires = useMemo(() => {

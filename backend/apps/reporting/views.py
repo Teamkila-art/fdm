@@ -197,7 +197,7 @@ class BilanAnnuelView(APIView):
         consommation_par_entite = list(
             LigneDemande.objects.filter(id_demande__date_demande__year=annee)
             .values(
-                type_service=F("id_demande__id_service__type_service"),
+                type_service=F("id_demande__id_service__id_type_service__nom"),
                 nom_service=F("id_demande__id_service__nom_service"),
             )
             .annotate(
@@ -361,7 +361,7 @@ class DashboardView(APIView):
                 "reference": f"DEM-{demande.date_demande.year}-{demande.id_demande:04d}",
                 "service": {
                     "nom_service": demande.id_service.nom_service if demande.id_service else "—",
-                    "type_service": demande.id_service.type_service if demande.id_service else None,
+                    "type_service": demande.id_service.id_type_service.nom if demande.id_service and demande.id_service.id_type_service else None,
                 },
                 "urgence": demande.urgence,
                 "statut": demande.statut,
@@ -568,7 +568,7 @@ class StatistiquesAchatsView(APIView):
 
         if entite:
             qs = qs.filter(
-                id_utilisateur__id_service__type_service=entite
+                id_utilisateur__id_service__id_type_service__nom=entite
             )
 
         monthly = (

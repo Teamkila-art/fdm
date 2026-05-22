@@ -496,7 +496,7 @@ export default function DemandeDetailPage() {
           <InfoField label="Service demandé"
             value={demande.service?.nomService ?? demande.service?.nom_service} />
           <InfoField label="Bénéficiaire"
-            value={demande.beneficiaire ? `${demande.beneficiaire.nom} (${demande.beneficiaire.roleType ?? demande.beneficiaire.role_type ?? ''})` : (demande.beneficiaireNom ?? demande.beneficiaire_nom)} />
+            value={demande.beneficiaire ? `${demande.beneficiaire.nom} (${demande.beneficiaire.type_beneficiaire ?? demande.beneficiaire.roleType ?? demande.beneficiaire.role_type ?? ''})` : (demande.beneficiaireNom ?? demande.beneficiaire_nom)} />
         </div>
       </div>
 

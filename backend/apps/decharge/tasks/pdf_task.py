@@ -135,7 +135,7 @@ def _build_pdf_bytes(decharge, lignes=None) -> bytes:
         )
         benef = demande.id_beneficiaire
         if benef:
-            role = benef.role_type or ""
+            role = benef.id_type_beneficiaire.nom if benef.id_type_beneficiaire else ""
             if role == "salle_de_cours":
                 affectation = f"{service_nom}<br/>SALLE DE COURS"
             elif role in _PERSONNEL_ROLES:

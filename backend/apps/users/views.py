@@ -7,7 +7,7 @@ from rest_framework import permissions, viewsets
 from apps.alerts.models import JournalAudit
 from apps.core.permissions import IsAdmin, IsGestionnaireOrAdmin
 
-from .models import Batiment, Beneficiaire, Etablissement, Fournisseur, Role, Service, Utilisateur
+from .models import Batiment, Beneficiaire, Etablissement, Fournisseur, Role, Service, TypeBeneficiaire, TypeService, Utilisateur
 from .serializers import (
     BatimentSerializer,
     BeneficiaireSerializer,
@@ -16,6 +16,8 @@ from .serializers import (
     JournalAuditSerializer,
     RoleSerializer,
     ServiceSerializer,
+    TypeBeneficiaireSerializer,
+    TypeServiceSerializer,
     UtilisateurAdminSerializer,
 )
 
@@ -98,7 +100,7 @@ class BeneficiaireViewSet(viewsets.ModelViewSet):
         return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
-        qs = Beneficiaire.objects.select_related("id_service").order_by("role_type", "nom")
+        qs = Beneficiaire.objects.select_related("id_service", "id_type_beneficiaire").order_by("id_type_beneficiaire__nom", "nom")
         id_service = self.request.query_params.get("id_service")
         if id_service:
             qs = qs.filter(id_service_id=id_service)
@@ -155,6 +157,26 @@ class FournisseurViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = FournisseurSerializer
     permission_classes = [IsAdmin]
     queryset = Fournisseur.objects.all().order_by("nom_societe")
+
+
+class TypeServiceViewSet(viewsets.ModelViewSet):
+    serializer_class = TypeServiceSerializer
+    queryset = TypeService.objects.all().order_by("nom")
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve"]:
+            return [permissions.IsAuthenticated()]
+        return [IsAdmin()]
+
+
+class TypeBeneficiaireViewSet(viewsets.ModelViewSet):
+    serializer_class = TypeBeneficiaireSerializer
+    queryset = TypeBeneficiaire.objects.all().order_by("nom")
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve"]:
+            return [permissions.IsAuthenticated()]
+        return [IsAdmin()]
 
 
 class JournalAuditViewSet(viewsets.ReadOnlyModelViewSet):

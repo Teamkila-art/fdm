@@ -37,3 +37,14 @@ export const getMyProfile = () => apiClient.get('/users/me/');
 export const updateMyProfile = (data) => apiClient.patch('/users/me/', data);
 
 export const getPersonnelByService = (serviceId) => apiClient.get('/users/beneficiaires/', { params: { id_service: serviceId } });
+
+// ── Type management endpoints ──────────────────────────────────────────────
+export const getTypesService = () => apiClient.get('/users/types-service/');
+export const createTypeService = (data) => apiClient.post('/users/types-service/', data);
+export const updateTypeService = (id, data) => apiClient.patch(`/users/types-service/${id}/`, data);
+export const deleteTypeService = (id) => apiClient.delete(`/users/types-service/${id}/`);
+
+export const getTypesBeneficiaire = () => apiClient.get('/users/types-beneficiaire/');
+export const createTypeBeneficiaire = (data) => apiClient.post('/users/types-beneficiaire/', data);
+export const updateTypeBeneficiaire = (id, data) => apiClient.patch(`/users/types-beneficiaire/${id}/`, data);
+export const deleteTypeBeneficiaire = (id) => apiClient.delete(`/users/types-beneficiaire/${id}/`);

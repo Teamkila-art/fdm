@@ -10,6 +10,8 @@ from .views import (
 	JournalAuditViewSet,
 	RoleViewSet,
 	ServiceViewSet,
+	TypeBeneficiaireViewSet,
+	TypeServiceViewSet,
 	UtilisateurViewSet,
 )
 
@@ -23,6 +25,8 @@ router.register("beneficiaires", BeneficiaireViewSet, basename="beneficiaire")
 router.register("roles", RoleViewSet, basename="role")
 router.register("journal-audit", JournalAuditViewSet, basename="journal-audit")
 router.register("fournisseurs", FournisseurViewSet, basename="fournisseur")
+router.register("types-service", TypeServiceViewSet, basename="type-service")
+router.register("types-beneficiaire", TypeBeneficiaireViewSet, basename="type-beneficiaire")
 
 
 from .views_promote import promote_admin, seed_personnel_beneficiaire

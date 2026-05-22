@@ -44,6 +44,7 @@ class NotificationType(models.TextChoices):
     DECHARGE_SIGNEE    = "decharge_signee", "Décharge signée"
     RETOUR_ENREGISTRE  = "retour_enregistre", "Retour enregistré"
     ALERTE_STOCK       = "alerte_stock", "Alerte stock"
+    ALERTE_DELAI       = "alerte_delai", "Alerte délai livraison"
     IMPORT_STAGING     = "import_staging", "Import en attente de révision"
 
 
@@ -63,6 +64,7 @@ NOTIFICATION_TYPE_TO_NIVEAU = {
     NotificationType.DECHARGE_SIGNEE:    NotificationNiveau.SUCCESS,
     NotificationType.RETOUR_ENREGISTRE:  NotificationNiveau.WARNING,
     NotificationType.ALERTE_STOCK:       NotificationNiveau.WARNING,
+    NotificationType.ALERTE_DELAI:       NotificationNiveau.WARNING,
     NotificationType.IMPORT_STAGING:     NotificationNiveau.INFO,
 }
 

@@ -8,6 +8,8 @@ export default function UtilisateurFormModal({
   roles = [],
   services = [],
   fournisseurs = [],
+  etablissements = [],
+  batiments = [],
   existingUsers = [],
   onClose,
   onSubmit,
@@ -15,13 +17,29 @@ export default function UtilisateurFormModal({
 }) {
   const isCreate = mode === 'create';
 
+  // Derive initial etablissement/batiment from the user's current service
+  const initialServiceId = String(initialData?.id_service?.id_service || initialData?.id_service || '');
+  const initialBatimentId = useMemo(() => {
+    if (!initialServiceId) return '';
+    const svc = services.find((s) => String(s.id_service) === initialServiceId);
+    return String(svc?.id_batiment ?? svc?.idBatiment ?? '');
+  }, [initialServiceId, services]);
+  const initialEtablissementId = useMemo(() => {
+    if (!initialBatimentId) return '';
+    const bat = batiments.find((b) => String(b.idBatiment ?? b.id_batiment) === initialBatimentId);
+    const etabId = bat?.idEtablissement ?? bat?.id_etablissement?.id_etablissement ?? bat?.id_etablissement;
+    return String(etabId || '');
+  }, [initialBatimentId, batiments]);
+
   const [form, setForm] = useState(() => ({
     nom_complet: initialData?.nom_complet || '',
     email: initialData?.email || '',
     password: '',
     titre_poste: initialData?.titre_poste || '',
     id_role: String(initialData?.id_role?.id_role || initialData?.id_role || ''),
-    id_service: String(initialData?.id_service?.id_service || initialData?.id_service || ''),
+    id_etablissement: initialEtablissementId,
+    id_batiment: initialBatimentId,
+    id_service: initialServiceId,
     id_fournisseur: String(initialData?.fournisseur_profile?.id_fournisseur || ''),
   }));
   const [errors, setErrors] = useState({});
@@ -31,6 +49,20 @@ export default function UtilisateurFormModal({
     [roles, form.id_role]
   );
   const isFournisseurRole = selectedRole?.nom_role === 'fournisseur';
+
+  // Cascading filters
+  const filteredBatiments = useMemo(() => {
+    if (!form.id_etablissement) return [];
+    return batiments.filter((b) => {
+      const etabId = b.idEtablissement ?? b.id_etablissement?.id_etablissement ?? b.id_etablissement;
+      return String(etabId) === String(form.id_etablissement);
+    });
+  }, [batiments, form.id_etablissement]);
+
+  const filteredServices = useMemo(() => {
+    if (!form.id_batiment) return [];
+    return services.filter((s) => String(s.id_batiment ?? s.idBatiment ?? '') === String(form.id_batiment));
+  }, [services, form.id_batiment]);
 
   const duplicateEmail = useMemo(() => {
     const trimmed = form.email.trim().toLowerCase();
@@ -42,7 +74,18 @@ export default function UtilisateurFormModal({
   }, [existingUsers, form.email, initialData?.id_utilisateur]);
 
   function setField(name, value) {
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => {
+      const next = { ...prev, [name]: value };
+      // Cascade resets
+      if (name === 'id_etablissement') {
+        next.id_batiment = '';
+        next.id_service = '';
+      }
+      if (name === 'id_batiment') {
+        next.id_service = '';
+      }
+      return next;
+    });
     setErrors((prev) => ({ ...prev, [name]: '' }));
   }
 
@@ -61,8 +104,10 @@ export default function UtilisateurFormModal({
 
     if (isFournisseurRole) {
       if (!form.id_fournisseur) next.id_fournisseur = REQUIRED_MESSAGE;
-    } else if (!form.id_service) {
-      next.id_service = REQUIRED_MESSAGE;
+    } else {
+      if (!form.id_etablissement) next.id_etablissement = 'Veuillez choisir un établissement.';
+      if (!form.id_batiment) next.id_batiment = 'Veuillez choisir un bâtiment.';
+      if (!form.id_service) next.id_service = REQUIRED_MESSAGE;
     }
 
     setErrors(next);
@@ -170,18 +215,74 @@ export default function UtilisateurFormModal({
               {errors.id_fournisseur ? <span style={errorTextStyle}>{errors.id_fournisseur}</span> : null}
             </label>
           ) : (
-            <label style={labelStyle}>
-              Service
-              <select style={inputStyle} value={form.id_service} onChange={(e) => setField('id_service', e.target.value)}>
-                <option value="">Sélectionner</option>
-                {services.map((service) => (
-                  <option key={service.id_service} value={service.id_service}>
-                    {service.nom_service}
+            <>
+              {/* ── Cascading: Établissement → Bâtiment → Service ── */}
+              <label style={labelStyle}>
+                Établissement
+                <select
+                  style={inputStyle}
+                  value={form.id_etablissement}
+                  onChange={(e) => setField('id_etablissement', e.target.value)}
+                >
+                  <option value="">-- Choisir un établissement --</option>
+                  {etablissements.map((et) => {
+                    const etabId = et.idEtablissement ?? et.id_etablissement;
+                    return (
+                      <option key={etabId} value={etabId}>
+                        {et.nom}
+                      </option>
+                    );
+                  })}
+                </select>
+                {errors.id_etablissement ? <span style={errorTextStyle}>{errors.id_etablissement}</span> : null}
+              </label>
+
+              <label style={labelStyle}>
+                Bâtiment
+                <select
+                  style={inputStyle}
+                  value={form.id_batiment}
+                  onChange={(e) => setField('id_batiment', e.target.value)}
+                  disabled={!form.id_etablissement}
+                >
+                  <option value="">
+                    {form.id_etablissement ? '-- Choisir un bâtiment --' : '-- Sélectionner un établissement d\'abord --'}
                   </option>
-                ))}
-              </select>
-              {errors.id_service ? <span style={errorTextStyle}>{errors.id_service}</span> : null}
-            </label>
+                  {filteredBatiments.map((b) => {
+                    const batId = b.idBatiment ?? b.id_batiment;
+                    return (
+                      <option key={batId} value={batId}>
+                        {b.nom}
+                      </option>
+                    );
+                  })}
+                </select>
+                {errors.id_batiment ? <span style={errorTextStyle}>{errors.id_batiment}</span> : null}
+              </label>
+
+              <label style={labelStyle}>
+                Service
+                <select
+                  style={inputStyle}
+                  value={form.id_service}
+                  onChange={(e) => setField('id_service', e.target.value)}
+                  disabled={!form.id_batiment}
+                >
+                  <option value="">
+                    {form.id_batiment ? '-- Choisir un service --' : '-- Sélectionner un bâtiment d\'abord --'}
+                  </option>
+                  {filteredServices.map((service) => {
+                    const svcId = service.id_service ?? service.idService;
+                    return (
+                      <option key={svcId} value={svcId}>
+                        {service.nom_service}
+                      </option>
+                    );
+                  })}
+                </select>
+                {errors.id_service ? <span style={errorTextStyle}>{errors.id_service}</span> : null}
+              </label>
+            </>
           )}
         </div>
 

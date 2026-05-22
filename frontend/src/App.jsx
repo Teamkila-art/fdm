@@ -38,7 +38,10 @@ const FournisseurMarchesPage = React.lazy(() => import('./pages/fournisseur/Marc
 const FournisseurMarcheTimelinePage = React.lazy(() => import('./pages/fournisseur/MarcheTimelinePage'));
 const UtilisateursPage = React.lazy(() => import('./pages/admin/UtilisateursPage'));
 const ServicesPage = React.lazy(() => import('./pages/admin/ServicesPage'));
-const JournalAuditPage = React.lazy(() => import('./pages/admin/JournalAuditPage'));
+const BatimentsPage = React.lazy(() => import('./pages/admin/BatimentsPage'));
+const CategoriesPage = React.lazy(() => import('./pages/admin/CategoriesPage'));
+const BeneficiairesPage = React.lazy(() => import('./pages/admin/BeneficiairesPage'));
+const TypesPage = React.lazy(() => import('./pages/admin/TypesPage'));
 
 const roleRoutes = [
   { path: '/gestionnaire/*', role: 'gestionnaire_magasin' },
@@ -384,13 +387,38 @@ export default function App() {
             }
           />
           <Route
-            path="/admin/audit"
+            path="/admin/batiments"
             element={
               <ProtectedRoute requiredRole="admin">
-                <JournalAuditPage />
+                <BatimentsPage />
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/categories"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <CategoriesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/beneficiaires"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <BeneficiairesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/types"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <TypesPage />
+              </ProtectedRoute>
+            }
+          />
+
           {/* Role-based routes */}
           {roleRoutes.map(({ path, role }) => (
             <Route

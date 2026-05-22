@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Batiment, Beneficiaire, Etablissement, Fournisseur, Role, RolePermission, Service, Utilisateur
+from .models import (
+    Batiment, Beneficiaire, Etablissement, Fournisseur,
+    Role, RolePermission, Service, TypeBeneficiaire, TypeService, Utilisateur,
+)
 
 
 @admin.register(Utilisateur)
@@ -36,8 +39,8 @@ class FournisseurAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ["nom_service", "type_service"]
-    list_filter = ["type_service"]
+    list_display = ["nom_service", "id_type_service"]
+    list_filter = ["id_type_service"]
     search_fields = ["nom_service"]
 
 
@@ -67,6 +70,18 @@ class BatimentAdmin(admin.ModelAdmin):
 
 @admin.register(Beneficiaire)
 class BeneficiaireAdmin(admin.ModelAdmin):
-    list_display = ["nom", "role_type", "id_service"]
-    list_filter = ["role_type", "id_service"]
+    list_display = ["nom", "id_type_beneficiaire", "id_service"]
+    list_filter = ["id_type_beneficiaire", "id_service"]
+    search_fields = ["nom"]
+
+
+@admin.register(TypeService)
+class TypeServiceAdmin(admin.ModelAdmin):
+    list_display = ["nom"]
+    search_fields = ["nom"]
+
+
+@admin.register(TypeBeneficiaire)
+class TypeBeneficiaireAdmin(admin.ModelAdmin):
+    list_display = ["nom"]
     search_fields = ["nom"]

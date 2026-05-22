@@ -151,7 +151,12 @@ class _ServiceBriefSerializer(serializers.Serializer):
 class _BeneficiaireBriefSerializer(serializers.Serializer):
     id_beneficiaire = serializers.IntegerField()
     nom = serializers.CharField()
-    role_type = serializers.CharField()
+    type_beneficiaire = serializers.SerializerMethodField()
+
+    def get_type_beneficiaire(self, obj):
+        if obj.id_type_beneficiaire:
+            return obj.id_type_beneficiaire.nom
+        return None
 
 
 class _MarcheBriefSerializer(serializers.Serializer):

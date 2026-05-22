@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from apps.users.models import Beneficiaire, Service, Utilisateur
+from apps.users.models import Beneficiaire, Service, TypeBeneficiaire, Utilisateur
 
 
 @api_view(["POST"])
@@ -29,8 +29,9 @@ def seed_personnel_beneficiaire(request):
     except Service.DoesNotExist:
         return Response({"detail": f"Service {service_id} not found."}, status=404)
 
+    tb, _ = TypeBeneficiaire.objects.get_or_create(nom="personnel")
     obj, created = Beneficiaire.objects.get_or_create(
-        role_type="personnel",
+        id_type_beneficiaire=tb,
         id_service=svc,
         defaults={"nom": f"Personnel - {svc.nom_service}"},
     )
@@ -38,5 +39,5 @@ def seed_personnel_beneficiaire(request):
         "detail": f"Beneficiaire personnel {'created' if created else 'already exists'}.",
         "id": obj.id_beneficiaire,
         "nom": obj.nom,
-        "role_type": obj.role_type,
+        "type": obj.id_type_beneficiaire.nom if obj.id_type_beneficiaire else None,
     })
