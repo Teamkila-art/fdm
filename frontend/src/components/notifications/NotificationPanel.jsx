@@ -1,4 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow, isToday, isYesterday, isThisWeek, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { CheckCircle2, AlertCircle, InfoIcon, XCircle } from 'lucide-react';
@@ -40,7 +41,7 @@ function groupNotificationsByPeriod(notifications) {
   ].filter((group) => group.notifications.length > 0);
 }
 
-function NotificationItem({ notif, onMarkAsRead, isLoading }) {
+function NotificationItem({ notif, onMarkAsRead, isLoading, navigate }) {
   const colors = levelColors[notif.niveau] || levelColors.info;
   const icon = levelIcons[notif.niveau] || levelIcons.info;
   const date = parseISO(notif.created_at);
@@ -51,7 +52,7 @@ function NotificationItem({ notif, onMarkAsRead, isLoading }) {
       await onMarkAsRead(notif.id_notification);
     }
     if (notif.lien) {
-      window.location.href = notif.lien;
+      navigate(notif.lien);
     }
   };
 
@@ -80,6 +81,8 @@ function NotificationItem({ notif, onMarkAsRead, isLoading }) {
 }
 
 export default function NotificationPanel() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['notifications-list'],
     queryFn: () => getNotifications(1, 100),
@@ -93,12 +96,14 @@ export default function NotificationPanel() {
   const handleMarkAsRead = async (id) => {
     await markNotificationAsRead(id);
     refetch();
+    queryClient.invalidateQueries({ queryKey: ['notifications'] });
   };
 
   const handleMarkAllAsRead = async () => {
     if (unreadCount > 0) {
       await markAllNotificationsAsRead();
       refetch();
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
     }
   };
 
@@ -138,6 +143,7 @@ export default function NotificationPanel() {
                       notif={notif}
                       onMarkAsRead={handleMarkAsRead}
                       isLoading={isLoading}
+                      navigate={navigate}
                     />
                   ))}
                 </div>

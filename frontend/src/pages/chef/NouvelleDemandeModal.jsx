@@ -132,13 +132,23 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
     queryKey: ['hierarchy', 'beneficiaires', userSvcId],
     queryFn: () => getBeneficiaires({ id_service: userSvcId }),
     enabled: Boolean(userSvcId),
-    staleTime: 300_000,
+    staleTime: 10_000,
   });
   const beneficiaires = benefQuery.data?.data || [];
 
   const _benId   = (b) => b.idBeneficiaire ?? b.id_beneficiaire;
   const _benNom  = (b) => b.nom;
-  const _benRole = (b) => b.type_beneficiaire_display?.nom ?? b.roleType ?? b.role_type;
+  const _benRole = (b) => b.typeBeneficiaireDisplay?.nom ?? b.type_beneficiaire_display?.nom ?? b.roleType ?? b.role_type;
+
+  const ROLE_LABELS = {
+    chef_service:   'Chef de Service',
+    fonctionnaire:  'Fonctionnaire',
+    secretariat:    'Secrétariat',
+    salle_de_cours: 'Salle de cours',
+    prof:           'Prof',
+    personnel:      'Personnel',
+  };
+  const _roleLabel = (role) => ROLE_LABELS[role] || role || 'Bénéficiaire';
 
   // Split beneficiaries into personnel and non-personnel
   const nonPersonnelBeneficiaires = useMemo(() => {
@@ -375,11 +385,15 @@ export default function NouvelleDemandeModal({ onClose, onCreated }) {
                   style={{ color: !selectedServiceId ? C.textMuted : undefined }}
                 >
                   <option value="">— Choisir —</option>
-                  {nonPersonnelBeneficiaires.map((b) => (
-                    <option key={_benId(b)} value={_benId(b)}>
-                      {_benNom(b)} ({_benRole(b) === 'chef_service' ? 'Chef' : _benRole(b) === 'secretariat' ? 'Secrétariat' : _benRole(b) === 'salle_de_cours' ? 'Salle de cours' : _benRole(b) === 'fonctionnaire' ? 'Fonctionnaire' : _benRole(b) === 'prof' ? 'Prof' : _benRole(b)})
-                    </option>
-                  ))}
+                  {nonPersonnelBeneficiaires.map((b) => {
+                    const role = _benRole(b);
+                    const roleLabel = _roleLabel(role);
+                    return (
+                      <option key={_benId(b)} value={_benId(b)}>
+                        {_benNom(b)} ({roleLabel})
+                      </option>
+                    );
+                  })}
                   {personnelBeneficiaires.length > 0 && (
                     <option value="personnel_group">Personnel</option>
                   )}

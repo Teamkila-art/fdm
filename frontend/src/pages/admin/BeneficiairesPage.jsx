@@ -29,7 +29,7 @@ function getTypeLabel(nom) {
 function BeneficiaireFormModal({ mode, initialData, etablissements, batiments, services, typesBeneficiaire, onClose, onSubmit, isSubmitting }) {
   const [form, setForm] = useState({
     nom: initialData?.nom ?? '',
-    id_type_beneficiaire: String(initialData?.id_type_beneficiaire ?? initialData?.idTypeBeneficiaire ?? ''),
+    id_type_beneficiaire: String(initialData?.idTypeBeneficiaire ?? initialData?.id_type_beneficiaire ?? ''),
     idEtablissement: '',
     idBatiment: '',
     idService: '',
@@ -132,9 +132,12 @@ function BeneficiaireFormModal({ mode, initialData, etablissements, batiments, s
               onChange={(e) => setField('id_type_beneficiaire', e.target.value)}
             >
               <option value="">-- Choisir un type --</option>
-              {typesBeneficiaire.map((t) => (
-                <option key={t.id_type_beneficiaire} value={t.id_type_beneficiaire}>{getTypeLabel(t.nom)}</option>
-              ))}
+              {typesBeneficiaire.map((t) => {
+                const tid = t.idTypeBeneficiaire ?? t.id_type_beneficiaire;
+                return (
+                  <option key={tid} value={tid}>{getTypeLabel(t.nom)}</option>
+                );
+              })}
             </select>
             {errors.id_type_beneficiaire ? <span style={errStyle}>{errors.id_type_beneficiaire}</span> : null}
           </label>
@@ -352,7 +355,7 @@ export default function BeneficiairesPage() {
     if (!q) return beneficiaires;
     return beneficiaires.filter((item) => {
       const name = (item.nom ?? '').toLowerCase();
-      const role = getTypeLabel(item.type_beneficiaire_display?.nom).toLowerCase();
+      const role = getTypeLabel((item.typeBeneficiaireDisplay?.nom ?? item.type_beneficiaire_display?.nom)).toLowerCase();
       
       const svc = svcMap[item.idService ?? item.id_service];
       const svcName = (svc?.nomService ?? svc?.nom_service ?? '').toLowerCase();
@@ -428,7 +431,7 @@ export default function BeneficiairesPage() {
               ) : (
                 filteredBeneficiaires.map((item) => {
                   const id = item.idBeneficiaire ?? item.id_beneficiaire;
-                  const roleKey = item.type_beneficiaire_display?.nom;
+                  const roleKey = item.typeBeneficiaireDisplay?.nom ?? item.type_beneficiaire_display?.nom;
                   const roleLabel = getTypeLabel(roleKey);
                   
                   const svc = svcMap[item.idService ?? item.id_service];

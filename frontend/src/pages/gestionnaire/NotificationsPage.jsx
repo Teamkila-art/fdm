@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow, isToday, isYesterday, isThisWeek, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { CheckCircle2, AlertCircle, InfoIcon, XCircle } from 'lucide-react';
@@ -42,7 +43,7 @@ function groupNotificationsByPeriod(notifications) {
   ].filter((group) => group.notifications.length > 0);
 }
 
-function NotificationItem({ notif, onMarkAsRead }) {
+function NotificationItem({ notif, onMarkAsRead, navigate }) {
   const colors = levelColors[notif.niveau] || levelColors.info;
   const icon = levelIcons[notif.niveau] || levelIcons.info;
   const date = parseISO(notif.created_at);
@@ -53,14 +54,14 @@ function NotificationItem({ notif, onMarkAsRead }) {
       await onMarkAsRead(notif.id_notification);
     }
     if (notif.lien) {
-      window.location.href = notif.lien;
+      navigate(notif.lien);
     }
   };
 
   return (
     <div
       onClick={handleClick}
-      className={`p-4 border-l-4 rounded cursor-pointer transition-all ${colors.bg} ${colors.border} hover:shadow-md`}
+      className={`p-4 border-l-4 rounded cursor-pointer transition-all ${colors.bg} ${colors.border} hover:shadow-md ${!notif.lu ? 'ring-1 ring-blue-200' : 'opacity-75'}`}
     >
       <div className="flex items-start gap-3">
         <div className={`mt-1 flex-shrink-0 ${colors.icon}`}>{icon}</div>
@@ -75,7 +76,7 @@ function NotificationItem({ notif, onMarkAsRead }) {
         </div>
         {!notif.lu && (
           <div className="flex-shrink-0">
-            <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5" />
+            <div className="w-2.5 h-2.5 bg-blue-500 rounded-full mt-1.5 animate-pulse" />
           </div>
         )}
       </div>
@@ -85,6 +86,8 @@ function NotificationItem({ notif, onMarkAsRead }) {
 
 export default function NotificationsPage() {
   const [selectedFilter, setSelectedFilter] = useState('all'); // all, unread
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['notifications-list-page'],
@@ -103,12 +106,14 @@ export default function NotificationsPage() {
   const handleMarkAsRead = async (id) => {
     await markNotificationAsRead(id);
     refetch();
+    queryClient.invalidateQueries({ queryKey: ['notifications'] });
   };
 
   const handleMarkAllAsRead = async () => {
     if (unreadCount > 0) {
       await markAllNotificationsAsRead();
       refetch();
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
     }
   };
 
@@ -189,6 +194,7 @@ export default function NotificationsPage() {
                       key={notif.id_notification}
                       notif={notif}
                       onMarkAsRead={handleMarkAsRead}
+                      navigate={navigate}
                     />
                   ))}
                 </div>
