@@ -12,7 +12,7 @@ import DechargePrintModal from './DechargePrintModal';
 
 // ── Design tokens ─────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf', green: '#16a34a',
+  primary: '#6366f1', lightPrimary: '#8b5cf6', primary: '#6366f1',
   amber: '#f59e0b', red: '#dc2626',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
@@ -112,19 +112,19 @@ export default function DechargeDetailPage() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 20, color: T.blue }}>&#9641;</span>
-            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: T.blue }}>
+            <span style={{ fontSize: 20, color: T.primary }}>&#9641;</span>
+            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: T.primary }}>
               Décharge {_num(decharge)}
             </h1>
           </div>
           <Link
             to={`/gestionnaire/demandes/${_demId(decharge)}`}
-            style={{ fontSize: 13, color: T.lightBlue, textDecoration: 'none', fontWeight: 500 }}
+            style={{ fontSize: 13, color: T.lightPrimary, textDecoration: 'none', fontWeight: 500 }}
           >
             ← Demande {demRef(decharge)}
           </Link>
         </div>
-        <div style={{ height: 3, background: T.lightBlue, borderRadius: 2, margin: '0 -24px' }} />
+        <div style={{ height: 3, background: T.lightPrimary, borderRadius: 2, margin: '0 -24px' }} />
       </div>
 
       {/* ── Info grid ── */}
@@ -253,5 +253,5 @@ const thStyle     = { padding: '9px 12px', fontSize: 12, fontWeight: 600, color:
 const tdStyle     = { padding: '10px 12px', color: T.textMid, verticalAlign: 'middle' };
 const btnBase     = { border: 'none', borderRadius: T.radiusSm, padding: '9px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer', lineHeight: '20px' };
 const btnOutline  = { ...btnBase, border: `1px solid ${T.border}`, background: T.bgWhite, color: T.textMuted };
-const btnPrimary  = { ...btnBase, background: T.green, color: '#fff' };
-const btnDownload = { ...btnBase, background: T.blue, color: '#fff' };
+const btnPrimary  = { ...btnBase, background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)', color: '#ffffff' };
+const btnDownload = { ...btnBase, background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)', color: '#ffffff' };

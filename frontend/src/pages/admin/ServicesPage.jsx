@@ -3,13 +3,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   createService, deleteService, getServices, updateService,
-  getEtablissements, getBatiments, getTypesService,
+  getEtablissements, getBatiments,
 } from '../../api/users';
 
-function ServiceFormModal({ mode, initialData, etablissements, batiments, typesService, onClose, onSubmit, isSubmitting }) {
+function ServiceFormModal({ mode, initialData, etablissements, batiments, onClose, onSubmit, isSubmitting }) {
   const [form, setForm] = useState({
     nom_service: initialData?.nomService ?? initialData?.nom_service ?? '',
-    id_type_service: String(initialData?.id_type_service ?? initialData?.idTypeService ?? ''),
     description: initialData?.description ?? '',
     lettre_nomination_chef: null,
     id_etablissement: '',
@@ -52,7 +51,6 @@ function ServiceFormModal({ mode, initialData, etablissements, batiments, typesS
   async function handleSave() {
     const nextErrors = {};
     if (!form.nom_service.trim()) nextErrors.nom_service = 'Ce champ est requis.';
-    if (!form.id_type_service) nextErrors.id_type_service = 'Ce champ est requis.';
     if (!form.id_etablissement) nextErrors.id_etablissement = 'Veuillez choisir un etablissement.';
     if (!form.id_batiment) nextErrors.id_batiment = 'Veuillez choisir un batiment.';
     setErrors(nextErrors);
@@ -60,7 +58,6 @@ function ServiceFormModal({ mode, initialData, etablissements, batiments, typesS
 
     const formData = new FormData();
     formData.append('nom_service', form.nom_service.trim());
-    formData.append('id_type_service', form.id_type_service);
     formData.append('description', form.description);
     formData.append('id_batiment', form.id_batiment);
     if (form.lettre_nomination_chef) {
@@ -82,14 +79,6 @@ function ServiceFormModal({ mode, initialData, etablissements, batiments, typesS
             {errors.nom_service ? <span style={errStyle}>{errors.nom_service}</span> : null}
           </label>
 
-          <label style={labelStyle}>
-            Type de service
-            <select style={inputStyle} value={form.id_type_service} onChange={(e) => setField('id_type_service', e.target.value)}>
-              <option value="">-- Choisir un type --</option>
-              {typesService.map((t) => <option key={t.id_type_service} value={t.id_type_service}>{t.nom}</option>)}
-            </select>
-            {errors.id_type_service ? <span style={errStyle}>{errors.id_type_service}</span> : null}
-          </label>
 
           <label style={labelStyle}>
             Etablissement
@@ -147,7 +136,6 @@ export default function ServicesPage() {
   const servicesQ = useQuery({ queryKey: ['users', 'services'], queryFn: () => getServices(), staleTime: 10000 });
   const etabQ = useQuery({ queryKey: ['users', 'etablissements'], queryFn: () => getEtablissements(), staleTime: 60000 });
   const batQ = useQuery({ queryKey: ['users', 'batiments'], queryFn: () => getBatiments(), staleTime: 60000 });
-  const typesServiceQ = useQuery({ queryKey: ['users', 'types-service'], queryFn: () => getTypesService(), staleTime: 60000 });
 
   const createM = useMutation({ mutationFn: createService, onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['users', 'services'] }); close(); } });
   const updateM = useMutation({ mutationFn: ({ id, data }) => updateService(id, data), onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['users', 'services'] }); close(); } });
@@ -156,7 +144,6 @@ export default function ServicesPage() {
   const rows = useMemo(() => servicesQ.data?.data || [], [servicesQ.data?.data]);
   const etablissements = useMemo(() => etabQ.data?.data || [], [etabQ.data?.data]);
   const batiments = useMemo(() => batQ.data?.data || [], [batQ.data?.data]);
-  const typesService = useMemo(() => typesServiceQ.data?.data || [], [typesServiceQ.data?.data]);
 
   const batMap = useMemo(() => { const m = {}; batiments.forEach((b) => { m[b.idBatiment ?? b.id_batiment] = b; }); return m; }, [batiments]);
   const etabMap = useMemo(() => { const m = {}; etablissements.forEach((e) => { m[e.idEtablissement ?? e.id_etablissement] = e; }); return m; }, [etablissements]);
@@ -212,7 +199,6 @@ export default function ServicesPage() {
             <thead>
               <tr style={{ background: '#f9fafb', textAlign: 'left' }}>
                 <th style={thS}>Nom service</th>
-                <th style={thS}>Type</th>
                 <th style={thS}>Etablissement</th>
                 <th style={thS}>Batiment</th>
                 <th style={thS}>Description</th>
@@ -221,14 +207,13 @@ export default function ServicesPage() {
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr><td colSpan={6} style={{ padding: 16, color: '#6b7280' }}>Aucun service.</td></tr>
+                <tr><td colSpan={5} style={{ padding: 16, color: '#6b7280' }}>Aucun service.</td></tr>
               ) : rows.map((svc) => {
                 const svcId = svc.idService ?? svc.id_service;
                 const batId = svc.idBatiment ?? svc.id_batiment;
                 return (
                   <tr key={svcId} style={{ borderTop: '1px solid #f3f4f6' }}>
                     <td style={tdS}>{svc.nomService ?? svc.nom_service}</td>
-                    <td style={tdS}>{svc.type_service_display?.nom || '—'}</td>
                     <td style={tdS}>{getEtabForBat(batId)}</td>
                     <td style={tdS}>{getBatName(batId)}</td>
                     <td style={tdS}>{svc.description || '—'}</td>
@@ -252,7 +237,6 @@ export default function ServicesPage() {
         <ServiceFormModal
           mode={mode} initialData={selected}
           etablissements={etablissements} batiments={batiments}
-          typesService={typesService}
           onClose={close} onSubmit={submit}
           isSubmitting={createM.isPending || updateM.isPending}
         />

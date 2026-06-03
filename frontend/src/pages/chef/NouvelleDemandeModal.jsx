@@ -15,7 +15,7 @@ const C = {
   bgWhite:       '#fff',
   bgSubtle:      '#f8fafc',
   primary:       '#1e293b',
-  accent:        '#0C447C',
+  primary: '#6366f1',
   danger:        '#ef4444',
 };
 
@@ -606,14 +606,14 @@ const modalHeaderStyle = {
 const headerTitleBlockStyle = {
   textAlign: 'center',
   paddingBottom: '1.25rem',
-  borderBottom: '3px solid #1a7abf',
+  borderBottom: '3px solid #8b5cf6',
 };
 
 const modalTitleStyle = {
   margin: '0 0 0',
   fontSize: '1.25rem',
   fontWeight: 700,
-  color: '#0C447C',
+  color: '#6366f1',
   lineHeight: 1.3,
 };
 
@@ -682,13 +682,13 @@ const chipRowStyle = {
 };
 
 const chipStyle = (active) => ({
-  border: `1px solid ${active ? '#0C447C' : C.border}`,
+  border: `1px solid ${active ? '#6366f1' : C.border}`,
   borderRadius: '0.5rem',
   padding: '0.5rem 1.25rem',
   fontSize: '0.875rem',
   fontWeight: 600,
   cursor: 'pointer',
-  background: active ? '#0C447C' : C.bgSubtle,
+  background: active ? '#6366f1' : C.bgSubtle,
   color: active ? '#fff' : C.textSecondary,
   transition: 'all 0.15s',
 });
@@ -714,7 +714,8 @@ const addBtnStyle = {
   height: '2.5rem',
   fontSize: '0.875rem',
   fontWeight: 600,
-  background: '#1a7abf',
+  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
   color: '#fff',
   cursor: 'pointer',
   whiteSpace: 'nowrap',
@@ -758,8 +759,7 @@ const badgeStyle = {
   minWidth: '1.375rem',
   height: '1.375rem',
   borderRadius: '999px',
-  background: C.accent,
-  color: '#fff',
+  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)', color: '#ffffff',
   fontSize: '0.7rem',
   fontWeight: 700,
   padding: '0 0.3rem',
@@ -822,6 +822,7 @@ const submitBtnStyle = {
   fontSize: '0.875rem',
   fontWeight: 600,
   color: '#fff',
-  background: '#1a7abf',
+  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
   cursor: 'pointer',
 };

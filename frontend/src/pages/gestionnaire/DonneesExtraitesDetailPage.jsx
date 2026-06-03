@@ -15,7 +15,7 @@ import { MOTIFS_REJET, STAGING_ITEM_LABELS, StatusBadge } from '@/constants/stat
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf', green: '#16a34a', red: '#dc2626',
+  primary: '#6366f1', lightPrimary: '#8b5cf6', primary: '#6366f1', red: '#dc2626',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
   radius: 12, radiusSm: 8,
@@ -260,7 +260,7 @@ export default function DonneesExtraitesDetailPage() {
 
       {/* ── Header ── */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: T.blue }}>
+        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: T.primary }}>
           {isReadOnly ? `Import #${importId}` : `Révision import #${importId}`}
         </h1>
         <button style={btnOutline} onClick={() => navigate('/gestionnaire/donnees-extraites')}>
@@ -498,7 +498,7 @@ const thStyle      = { padding: '9px 12px', fontSize: 12, fontWeight: 700, color
 const tdStyle      = { padding: '10px 12px', fontSize: 13, color: T.textMid, verticalAlign: 'middle' };
 const inputStyle   = { border: `1px solid ${T.border}`, borderRadius: T.radiusSm, padding: '6px 10px', fontSize: 13, color: T.textDark, background: T.bgWhite, width: '100%', boxSizing: 'border-box' };
 const btnBase      = { border: 'none', borderRadius: T.radiusSm, padding: '7px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' };
-const btnPrimary   = { ...btnBase, background: T.blue, color: '#fff' };
+const btnPrimary   = { ...btnBase, background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)', color: '#ffffff' };
 const btnSecondary = { ...btnBase, border: `1px solid ${T.border}`, background: T.bgWhite, color: T.textMid };
 const btnOutline   = { ...btnBase, border: `1px solid ${T.border}`, background: T.bgWhite, color: T.textMid };
 const btnDanger    = { ...btnBase, background: T.red, color: '#fff' };

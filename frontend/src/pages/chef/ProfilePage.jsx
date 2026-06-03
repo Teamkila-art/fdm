@@ -5,15 +5,15 @@ import { getMyProfile, updateMyProfile, getEtablissements, getBatiments, getServ
 
 // ── Design tokens ─────────────────────────────────────────────────────────
 const C = {
-  green:     '#0F6E56',
-  lightGreen:'#1D9E75',
+  primary:   '#6366f1',
+  lightPrimary:'#8b5cf6',
   textDark:  '#0f172a',
   textMid:   '#374151',
   textMuted: '#64748b',
   border:    '#e2e8f0',
   bgWhite:   '#ffffff',
   bgSubtle:  '#f8fafc',
-  accent:    '#0C447C',
+  primary: '#6366f1',
   danger:    '#ef4444',
   radius:    12,
   radiusSm:  8,
@@ -161,14 +161,14 @@ export default function ProfilePage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div style={{
             width: 56, height: 56, borderRadius: '50%',
-            background: `linear-gradient(135deg, ${C.green}, ${C.lightGreen})`,
+            background: `linear-gradient(135deg, ${C.primary}, ${C.lightPrimary})`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: '#fff', fontSize: 22, fontWeight: 700,
           }}>
             {(nomComplet || '?')[0].toUpperCase()}
           </div>
           <div>
-            <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: C.green }}>
+            <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: C.primary }}>
               Mon profil
             </h1>
             <p style={{ margin: 0, fontSize: 13, color: C.textMuted, marginTop: 2 }}>
@@ -176,7 +176,7 @@ export default function ProfilePage() {
             </p>
           </div>
         </div>
-        <div style={{ height: 3, background: C.lightGreen, borderRadius: 2, margin: '16px -24px 0' }} />
+        <div style={{ height: 3, background: C.lightPrimary, borderRadius: 2, margin: '16px -24px 0' }} />
       </div>
 
       {/* ── Editable fields ── */}
@@ -270,7 +270,7 @@ export default function ProfilePage() {
           {mutation.isPending ? 'Enregistrement…' : 'Enregistrer les modifications'}
         </button>
         {saved && (
-          <span style={{ fontSize: 13, color: C.green, fontWeight: 600 }}>
+          <span style={{ fontSize: 13, color: C.primary, fontWeight: 600 }}>
             ✓ Profil mis à jour
           </span>
         )}
@@ -354,5 +354,7 @@ const inputStyle = {
 const btnPrimary = {
   border: 'none', borderRadius: C.radiusSm,
   padding: '10px 20px', fontSize: 14, fontWeight: 600,
-  background: C.green, color: '#fff', cursor: 'pointer',
+  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
+  color: '#ffffff', cursor: 'pointer',
 };

@@ -61,7 +61,7 @@ const TOOLBAR_BUTTON_STYLE = {
 const PRIMARY_TOOLBAR_BUTTON_STYLE = {
   display: 'inline-flex', alignItems: 'center', gap: 7,
   padding: '9px 14px', borderRadius: 10, border: 'none',
-  background: '#0C447C', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+  background: '#6366f1', color: '#fff', fontSize: 13, fontWeight: 700, cursor: 'pointer',
 };
 const TABLE_HEADER_CELL_STYLE = {
   position: 'sticky', top: 0, background: '#f8fafc',
@@ -70,7 +70,7 @@ const TABLE_HEADER_CELL_STYLE = {
 };
 const TABLE_CELL_STYLE = { padding: '12px 14px', verticalAlign: 'middle' };
 const CATEGORY_PALETTE = [
-  { background: '#E6F1FB', color: '#0C447C' },
+  { background: '#E6F1FB', color: '#6366f1' },
   { background: '#EEEDFE', color: '#3C3489' },
   { background: '#FEF3C7', color: '#92400E' },
   { background: '#ECFDF5', color: '#065F46' },
@@ -85,7 +85,7 @@ const CATEGORY_ACTIONS = [
   { key: 'filter', icon: Filter, label: 'Filtrer' },
 ];
 const TYPE_BADGE_STYLES = {
-  consommable:      { bg: '#E6F1FB', color: '#0C447C' },
+  consommable:      { bg: '#E6F1FB', color: '#6366f1' },
   bien_inventaire:  { bg: '#EEEDFE', color: '#3C3489' },
 };
 
@@ -129,7 +129,7 @@ export default function StockPage() {
               style={{
                 padding: '12px 20px', fontSize: 13,
                 fontWeight: on ? 700 : 500,
-                color: on ? '#0C447C' : '#64748b',
+                color: on ? '#6366f1' : '#64748b',
                 background: 'transparent', border: 'none',
                 borderBottom: on ? '2px solid #0C447C' : '2px solid transparent',
                 marginBottom: -2, cursor: 'pointer', whiteSpace: 'nowrap',
@@ -576,7 +576,7 @@ function ArticlesTab({ queryClient }) {
                       display: 'inline-block', padding: '2px 8px', borderRadius: 999,
                       fontSize: 11, fontWeight: 600,
                       background: a.type === 'consommable' ? '#E6F1FB' : '#EEEDFE',
-                      color:      a.type === 'consommable' ? '#0C447C' : '#3C3489',
+                      color:      a.type === 'consommable' ? '#6366f1' : '#3C3489',
                     }}>
                       {a.type === 'consommable' ? 'Consommable' : 'Bien Inventaire'}
                     </span>
@@ -704,7 +704,7 @@ function ArticlesTab({ queryClient }) {
           >
             {/* Modal header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#0C447C' }}>
+              <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: '#6366f1' }}>
                 {modal.mode === 'add' ? 'Nouvel article' : 'Modifier l\'article'}
               </h2>
               <button type="button" onClick={() => setModal(null)} style={iconBtn}>
@@ -859,7 +859,7 @@ function ArticlesTab({ queryClient }) {
                   disabled={saving}
                   style={{
                     padding: '8px 18px', borderRadius: 8, fontSize: 13, fontWeight: 600,
-                    background: '#0C447C', color: '#fff', border: 'none',
+                    background: '#6366f1', color: '#fff', border: 'none',
                     cursor: saving ? 'not-allowed' : 'pointer', opacity: saving ? 0.7 : 1,
                   }}
                 >
@@ -1146,7 +1146,7 @@ function ArticleInstancesModal({ article, onClose, queryClient }) {
                               disabled={updateMutation.isPending}
                               style={{
                                 padding: '8px 12px', borderRadius: 10,
-                                border: 'none', background: '#0C447C', color: '#fff',
+                                border: 'none', background: '#6366f1', color: '#fff',
                                 fontSize: 12, fontWeight: 800, cursor: 'pointer',
                                 opacity: updateMutation.isPending ? 0.7 : 1,
                               }}
@@ -1244,7 +1244,7 @@ const SVC_TYPE_LABELS = {
 };
 const SVC_TYPE_BADGE = {
   administratif: { bg: '#f1f5f9', color: '#475569' },
-  chu:           { bg: '#E6F1FB', color: '#0C447C' },
+  chu:           { bg: '#E6F1FB', color: '#6366f1' },
   decanat:       { bg: '#EEEDFE', color: '#3C3489' },
   pharmacie:     { bg: '#ECFDF5', color: '#065F46' },
   dentaire:      { bg: '#E0F2FE', color: '#0369A1' },
@@ -1259,7 +1259,7 @@ const BEN_ROLE_LABELS = {
   prof:           'Prof',
 };
 const BEN_ROLE_BADGE = {
-  chef_service:   { bg: '#E6F1FB', color: '#0C447C' },
+  chef_service:   { bg: '#E6F1FB', color: '#6366f1' },
   fonctionnaire:  { bg: '#f1f5f9', color: '#475569' },
   secretariat:    { bg: '#ECFDF5', color: '#065F46' },
   salle_de_cours: { bg: '#FEF3C7', color: '#92400E' },
@@ -1718,9 +1718,9 @@ function CategoriesTab({ queryClient }) {
                 style={{
                   padding: '4px 12px', borderRadius: 999, border: '1px solid',
                   fontSize: 12, fontWeight: 600, cursor: 'pointer',
-                  borderColor: typeFilter === opt.key ? '#0C447C' : '#e2e8f0',
+                  borderColor: typeFilter === opt.key ? '#6366f1' : '#e2e8f0',
                   background: typeFilter === opt.key ? '#E6F1FB' : '#fff',
-                  color: typeFilter === opt.key ? '#0C447C' : '#64748b',
+                  color: typeFilter === opt.key ? '#6366f1' : '#64748b',
                 }}
               >
                 {opt.label}
@@ -1920,7 +1920,7 @@ function CategoriesTab({ queryClient }) {
                                     display: 'inline-flex', alignItems: 'center', gap: 7,
                                     padding: '9px 13px', borderRadius: 11,
                                     border: '1px solid #cfe0ee', background: '#fff',
-                                    color: '#0C447C', fontSize: 13, fontWeight: 700,
+                                    color: '#6366f1', fontSize: 13, fontWeight: 700,
                                     cursor: 'pointer',
                                   }}
                                 >
@@ -2476,7 +2476,7 @@ function StructureTab({ queryClient }) {
                       <td colSpan={5} style={{ padding: '0 12px 14px' }}>
                         <div style={{ background: '#F8FBFF', border: '1px solid #dbe8f5', borderRadius: 16, padding: 14 }}>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 12 }}>
-                            <span style={{ fontSize: 13, fontWeight: 700, color: '#0C447C' }}>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: '#6366f1' }}>
                               Services — {bat.nom}
                             </span>
                             <button
@@ -2614,7 +2614,7 @@ const MOTIF_OPTS = [
 const MOTIF_LABEL = Object.fromEntries(MOTIF_OPTS.map((o) => [o.value, o.label]));
 
 const STATUT_BADGE_CFG = {
-  en_stock:       { bg: '#E6F1FB', color: '#0C447C', label: 'En stock' },
+  en_stock:       { bg: '#E6F1FB', color: '#6366f1', label: 'En stock' },
   en_service:     { bg: '#ecfdf3', color: '#027A48', label: 'En service' },
   en_maintenance: { bg: '#FEF3C7', color: '#92400E', label: 'En maintenance' },
   debarras:       { bg: '#FEE2E2', color: '#991B1B', label: 'Débarras' },
@@ -2622,7 +2622,7 @@ const STATUT_BADGE_CFG = {
 
 const MOUV_BADGE_CFG = {
   entree:    { bg: '#ecfdf3', color: '#027A48', label: 'Entrée' },
-  sortie:    { bg: '#E6F1FB', color: '#0C447C', label: 'Sortie' },
+  sortie:    { bg: '#E6F1FB', color: '#6366f1', label: 'Sortie' },
   retour:    { bg: '#FEF3C7', color: '#92400E', label: 'Retour' },
   transfert: { bg: '#EEEDFE', color: '#3C3489', label: 'Transfert' },
   rebut:     { bg: '#FEE2E2', color: '#991B1B', label: 'Rebut' },
@@ -2812,7 +2812,7 @@ function SuiviAffectationTab({ queryClient }) {
         <button
           type="button"
           onClick={() => { setAffectNew(true); setNewPickedId(''); setAffectForm({ statut: 'en_service', idServiceActuel: '', idLieuAffectation: '', idDestinataire: '', etat: 'bon_etat', observation: '', dateDerniereAffectation: new Date().toISOString().split('T')[0] }); setAffectErr(''); }}
-          style={{ padding: '8px 18px', borderRadius: 8, border: 'none', background: '#0C447C', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
+          style={{ padding: '8px 18px', borderRadius: 8, border: 'none', background: '#6366f1', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' }}
         >
           + Affecter
         </button>
@@ -3305,7 +3305,7 @@ function DebarrasTab({ queryClient }) {
                           <span style={{ fontWeight: 700, fontSize: 12, color: '#0f172a', minWidth: 90, flexShrink: 0 }}>{inst.numeroInventaire ?? inst.numero_inventaire ?? '—'}</span>
                           <span style={{ fontSize: 12, color: '#475569', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{inst.ressource?.designation ?? '—'}</span>
                           <span style={{ padding: '2px 8px', borderRadius: 999, background: sCfg.bg, color: sCfg.color, fontSize: 10, fontWeight: 700, flexShrink: 0 }}>{sCfg.label}</span>
-                          {selected && <span style={{ color: '#0C447C', fontSize: 13, fontWeight: 900, flexShrink: 0 }}>✓</span>}
+                          {selected && <span style={{ color: '#6366f1', fontSize: 13, fontWeight: 900, flexShrink: 0 }}>✓</span>}
                         </div>
                       );
                     })}

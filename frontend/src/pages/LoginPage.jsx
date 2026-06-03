@@ -44,9 +44,9 @@ export default function LoginPage() {
       width: '100%',
       maxWidth: 420,
       background: '#ffffff',
-      borderRadius: 14,
-      boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
-      padding: 28,
+      borderRadius: 16,
+      boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01)',
+      padding: 32,
     }),
     []
   );
@@ -74,36 +74,29 @@ export default function LoginPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#f3f4f6',
+        background: '#f8fafc',
         padding: 16,
       }}
     >
       <div style={cardStyle}>
-        <div style={{ textAlign: 'center', marginBottom: 22 }}>
-          <div
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+          <img
+            src="/logo.png"
+            alt="Logo FMPDF"
             style={{
-              width: 54,
-              height: 54,
-              margin: '0 auto 12px',
-              borderRadius: '50%',
-              background: '#111827',
-              color: '#fff',
-              display: 'grid',
-              placeItems: 'center',
-              fontWeight: 700,
+              width: 56,
+              height: 56,
+              margin: '0 auto 16px',
+              display: 'block',
+              objectFit: 'contain',
             }}
-          >
-            FM
-          </div>
-          <h1 style={{ margin: 0, fontSize: 24, color: '#111827' }}>FMPDF</h1>
-          <p style={{ margin: '6px 0 0', fontSize: 14, color: '#6b7280' }}>
-            Faculté de Médecine et de Pharmacie de Dakar
-          </p>
+          />
+          <h1 style={{ margin: 0, fontSize: 24, color: '#0f172a', fontWeight: 700 }}>FMPDF</h1>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <div style={{ marginBottom: 14 }}>
-            <label htmlFor="email" style={{ display: 'block', marginBottom: 6, fontSize: 14, color: '#111827' }}>
+          <div style={{ marginBottom: 16 }}>
+            <label htmlFor="email" style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: '#334155' }}>
               Adresse email
             </label>
             <input
@@ -113,20 +106,21 @@ export default function LoginPage() {
               {...register('email')}
               style={{
                 width: '100%',
-                border: `1px solid ${errors.email ? '#ef4444' : '#d1d5db'}`,
+                border: `1px solid ${errors.email ? '#ef4444' : '#e2e8f0'}`,
                 borderRadius: 10,
-                padding: '10px 12px',
+                padding: '12px 14px',
                 fontSize: 14,
                 outline: 'none',
+                background: '#f8fafc',
               }}
             />
             {errors.email && (
-              <p style={{ margin: '6px 0 0', color: '#dc2626', fontSize: 12 }}>{errors.email.message}</p>
+              <p style={{ margin: '6px 0 0', color: '#ef4444', fontSize: 12 }}>{errors.email.message}</p>
             )}
           </div>
 
-          <div style={{ marginBottom: 10 }}>
-            <label htmlFor="password" style={{ display: 'block', marginBottom: 6, fontSize: 14, color: '#111827' }}>
+          <div style={{ marginBottom: 20 }}>
+            <label htmlFor="password" style={{ display: 'block', marginBottom: 8, fontSize: 13, fontWeight: 500, color: '#334155' }}>
               Mot de passe
             </label>
             <div style={{ position: 'relative' }}>
@@ -137,11 +131,12 @@ export default function LoginPage() {
                 {...register('password')}
                 style={{
                   width: '100%',
-                  border: `1px solid ${errors.password ? '#ef4444' : '#d1d5db'}`,
+                  border: `1px solid ${errors.password ? '#ef4444' : '#e2e8f0'}`,
                   borderRadius: 10,
-                  padding: '10px 40px 10px 12px',
+                  padding: '12px 40px 12px 14px',
                   fontSize: 14,
                   outline: 'none',
+                  background: '#f8fafc',
                 }}
               />
               <button
@@ -150,33 +145,35 @@ export default function LoginPage() {
                 aria-label={showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
                 style={{
                   position: 'absolute',
-                  right: 10,
+                  right: 12,
                   top: '50%',
                   transform: 'translateY(-50%)',
                   border: 'none',
                   background: 'transparent',
                   cursor: 'pointer',
-                  color: '#6b7280',
-                  padding: 2,
+                  color: '#94a3b8',
+                  padding: 4,
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
             {errors.password && (
-              <p style={{ margin: '6px 0 0', color: '#dc2626', fontSize: 12 }}>{errors.password.message}</p>
+              <p style={{ margin: '6px 0 0', color: '#ef4444', fontSize: 12 }}>{errors.password.message}</p>
             )}
           </div>
 
           {authError && (
             <div
               style={{
-                marginBottom: 12,
+                marginBottom: 16,
                 background: '#fee2e2',
                 color: '#991b1b',
                 border: '1px solid #fecaca',
                 borderRadius: 10,
-                padding: '8px 10px',
+                padding: '10px 12px',
                 fontSize: 13,
               }}
             >
@@ -190,14 +187,16 @@ export default function LoginPage() {
             style={{
               width: '100%',
               border: 'none',
-              background: '#111827',
-              color: '#fff',
+              background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+              color: '#ffffff',
               borderRadius: 10,
-              padding: '11px 12px',
-              fontSize: 14,
+              padding: '12px 16px',
+              fontSize: 15,
               fontWeight: 600,
               cursor: isSubmitting ? 'not-allowed' : 'pointer',
-              opacity: isSubmitting ? 0.7 : 1,
+              opacity: isSubmitting ? 0.8 : 1,
+              boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
+              marginTop: 4,
             }}
           >
             {isSubmitting ? 'Connexion en cours…' : 'Se connecter'}

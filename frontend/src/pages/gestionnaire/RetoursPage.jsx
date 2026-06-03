@@ -5,7 +5,7 @@ import { getRetours, updateDecision } from '../../api/returns';
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf', green: '#16a34a',
+  primary: '#6366f1', lightPrimary: '#8b5cf6', primary: '#6366f1',
   amber: '#f59e0b', red: '#dc2626',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
@@ -15,7 +15,7 @@ const T = {
 const DECISION_ACTIONS = [
   { key: 'repare',    label: 'Réparé',    bg: '#16a34a' },
   { key: 'debarras',  label: 'Débarras',  bg: '#dc2626' },
-  { key: 'reaffecte', label: 'Réaffecter', bg: '#0C447C' },
+  { key: 'reaffecte', label: 'Réaffecter', bg: '#6366f1' },
 ];
 
 const MOTIF_BADGE = {
@@ -259,7 +259,7 @@ export default function RetoursPage() {
             <h3 style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 700, color: T.textDark }}>
               Confirmer la décision
             </h3>
-            <div style={{ height: 2, background: T.lightBlue, borderRadius: 2, margin: '0 -20px 16px' }} />
+            <div style={{ height: 2, background: T.lightPrimary, borderRadius: 2, margin: '0 -20px 16px' }} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <span style={{ fontSize: 12, fontWeight: 600, color: T.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 Justification (obligatoire)
@@ -306,7 +306,7 @@ const selectStyle = { border: `1px solid ${T.border}`, borderRadius: T.radiusSm,
 const actionBtn   = { border: 'none', borderRadius: 6, padding: '4px 10px', color: '#fff', cursor: 'pointer', fontSize: 12, fontWeight: 600 };
 const btnBase     = { border: 'none', borderRadius: T.radiusSm, padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer' };
 const btnOutline  = { ...btnBase, border: `1px solid ${T.border}`, background: T.bgWhite, color: T.textMid };
-const btnConfirm  = { ...btnBase, background: T.blue, color: '#fff' };
+const btnConfirm  = { ...btnBase, background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)', color: '#ffffff' };
 const overlayStyle = {
   position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.4)',
   display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 40, padding: 16,

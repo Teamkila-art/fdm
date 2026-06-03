@@ -42,9 +42,9 @@ import { getLots, getMarches } from '../../api/procurement';
 const STALE_TIME = 30_000;
 
 const TABS = [
-  { key: 'stock',  label: 'État du Stock',        accent: '#0C447C', soft: '#E6F1FB' },
-  { key: 'bilan',  label: 'Bilan Annuel',          accent: '#7c3aed', soft: '#f5f3ff' },
-  { key: 'achats', label: 'Statistiques Achats',   accent: '#0d9488', soft: '#f0fdfa' },
+  { key: 'stock',  label: 'État du Stock',        primary: '#6366f1', soft: '#E6F1FB' },
+  { key: 'bilan',  label: 'Bilan Annuel',          primary: '#6366f1', soft: '#f5f3ff' },
+  { key: 'achats', label: 'Statistiques Achats',   primary: '#6366f1', soft: '#f0fdfa' },
 ];
 
 const STOCK_SUBTABS = [
@@ -52,7 +52,7 @@ const STOCK_SUBTABS = [
   { key: 'periodique', label: 'Périodique' },
 ];
 
-const PIE_COLORS = ['#0C447C', '#16a34a', '#f59e0b', '#7c3aed', '#ef4444'];
+const PIE_COLORS = ['#6366f1', '#16a34a', '#f59e0b', '#7c3aed', '#ef4444'];
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 function pick(a, b, fallback = 0) { return a ?? b ?? fallback; }
@@ -363,7 +363,7 @@ export default function ReportingPage() {
               return (
                 <button key={st.key} type="button"
                   onClick={() => setStockSubTab(st.key)}
-                  style={{ ...subTabBtnStyle, ...(active ? { background: '#0C447C', color: '#fff', borderColor: '#0C447C' } : {}) }}>
+                  style={{ ...subTabBtnStyle, ...(active ? { background: '#6366f1', color: '#fff', borderColor: '#6366f1' } : {}) }}>
                   {st.label}
                 </button>
               );
@@ -595,9 +595,9 @@ export default function ReportingPage() {
           <SectionShell title="Statistiques Marchés">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0,1fr))', gap: 10 }}>
               {[
-                { label: 'Réceptionnés & stockés', value: pick(bilanMarches.receptionnes, null, 0), accent: '#16a34a', soft: '#f0fdf4' },
-                { label: 'Non conformes',           value: pick(bilanMarches.nonConformes, bilanMarches.non_conformes, 0), accent: '#b91c1c', soft: '#fef2f2' },
-                { label: 'En attente livraison',    value: pick(bilanMarches.enAttente, bilanMarches.en_attente, 0), accent: '#f59e0b', soft: '#fffbeb' },
+                { label: 'Réceptionnés & stockés', value: pick(bilanMarches.receptionnes, null, 0), primary: '#6366f1', soft: '#f0fdf4' },
+                { label: 'Non conformes',           value: pick(bilanMarches.nonConformes, bilanMarches.non_conformes, 0), primary: '#6366f1', soft: '#fef2f2' },
+                { label: 'En attente livraison',    value: pick(bilanMarches.enAttente, bilanMarches.en_attente, 0), primary: '#6366f1', soft: '#fffbeb' },
               ].map(({ label, value, accent, soft }) => (
                 <div key={label} style={{ border: `1px solid ${accent}22`, borderRadius: 12, padding: '14px 16px', background: soft }}>
                   <div style={{ fontSize: 11, color: '#475569', marginBottom: 4 }}>{label}</div>

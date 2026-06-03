@@ -8,7 +8,7 @@ import { MARCHE_STATUT_LABELS, TYPE_ACQUISITION_LABELS, StatusBadge } from '@/co
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf',
+  primary: '#6366f1', lightPrimary: '#8b5cf6',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
   radius: 12, radiusSm: 8,
@@ -270,6 +270,6 @@ const toolbar     = { padding: '12px 16px', background: T.bgSubtle, borderBottom
 const thStyle     = { padding: '9px 12px', fontSize: 12, fontWeight: 700, color: T.textMuted, textAlign: 'left', borderBottom: `1px solid ${T.border}`, background: T.bgSubtle };
 const tdStyle     = { padding: '10px 12px', fontSize: 13, color: T.textMid, verticalAlign: 'middle' };
 const selectStyle = { border: `1px solid ${T.border}`, borderRadius: T.radiusSm, padding: '7px 10px', fontSize: 13, color: T.textDark, background: T.bgWhite, width: '100%' };
-const btnPrimary  = { border: 'none', borderRadius: T.radiusSm, padding: '8px 16px', background: T.blue, color: '#fff', cursor: 'pointer', fontWeight: 600, fontSize: 13 };
+const btnPrimary  = { border: 'none', borderRadius: T.radiusSm, padding: '8px 16px', background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)', color: '#ffffff', cursor: 'pointer', fontWeight: 600, fontSize: 13 };
 const btnSecondary = { border: `1px solid ${T.border}`, borderRadius: T.radiusSm, padding: '8px 16px', background: '#fff', color: T.textDark, cursor: 'pointer', fontWeight: 600, fontSize: 13, display: 'inline-flex', alignItems: 'center' };
 const btnConfirmer = { border: `1px solid #15803d`, borderRadius: T.radiusSm, padding: '5px 10px', background: '#f0fdf4', color: '#15803d', cursor: 'pointer', fontWeight: 600, fontSize: 12, whiteSpace: 'nowrap' };

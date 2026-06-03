@@ -655,7 +655,7 @@ const btnBase = {
   fontSize: 12, fontWeight: 600, cursor: 'pointer', lineHeight: '18px',
 };
 const btnEdit     = { ...btnBase, border: '1px solid #d1d5db', background: '#fff', color: '#374151' };
-const btnSave     = { ...btnBase, background: '#0C447C', color: '#fff' };
+const btnSave     = { ...btnBase, background: '#6366f1', color: '#fff' };
 const btnCancel   = { ...btnBase, border: '1px solid #d1d5db', background: '#fff', color: '#374151' };
 const btnNextEtape = {
   ...btnBase, fontSize: 11, padding: '3px 10px',

@@ -7,7 +7,6 @@ export default function UtilisateurFormModal({
   initialData,
   roles = [],
   services = [],
-  fournisseurs = [],
   etablissements = [],
   batiments = [],
   existingUsers = [],
@@ -40,15 +39,8 @@ export default function UtilisateurFormModal({
     id_etablissement: initialEtablissementId,
     id_batiment: initialBatimentId,
     id_service: initialServiceId,
-    id_fournisseur: String(initialData?.fournisseur_profile?.id_fournisseur || ''),
   }));
   const [errors, setErrors] = useState({});
-
-  const selectedRole = useMemo(
-    () => roles.find((item) => String(item.id_role) === String(form.id_role)),
-    [roles, form.id_role]
-  );
-  const isFournisseurRole = selectedRole?.nom_role === 'fournisseur';
 
   // Cascading filters
   const filteredBatiments = useMemo(() => {
@@ -102,13 +94,9 @@ export default function UtilisateurFormModal({
       next.password = REQUIRED_MESSAGE;
     }
 
-    if (isFournisseurRole) {
-      if (!form.id_fournisseur) next.id_fournisseur = REQUIRED_MESSAGE;
-    } else {
-      if (!form.id_etablissement) next.id_etablissement = 'Veuillez choisir un établissement.';
-      if (!form.id_batiment) next.id_batiment = 'Veuillez choisir un bâtiment.';
-      if (!form.id_service) next.id_service = REQUIRED_MESSAGE;
-    }
+    if (!form.id_etablissement) next.id_etablissement = 'Veuillez choisir un établissement.';
+    if (!form.id_batiment) next.id_batiment = 'Veuillez choisir un bâtiment.';
+    if (!form.id_service) next.id_service = REQUIRED_MESSAGE;
 
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -129,12 +117,7 @@ export default function UtilisateurFormModal({
       payload.password = form.password;
     }
 
-    if (isFournisseurRole) {
-      payload.id_fournisseur = Number(form.id_fournisseur);
-      payload.id_service = null;
-    } else {
-      payload.id_service = Number(form.id_service);
-    }
+    payload.id_service = Number(form.id_service);
 
     await onSubmit?.(payload, { setErrors });
   }
@@ -197,93 +180,72 @@ export default function UtilisateurFormModal({
             {errors.id_role ? <span style={errorTextStyle}>{errors.id_role}</span> : null}
           </label>
 
-          {isFournisseurRole ? (
-            <label style={labelStyle}>
-              Fournisseur
-              <select
-                style={inputStyle}
-                value={form.id_fournisseur}
-                onChange={(e) => setField('id_fournisseur', e.target.value)}
-              >
-                <option value="">Sélectionner</option>
-                {fournisseurs.map((fournisseur) => (
-                  <option key={fournisseur.id_fournisseur} value={fournisseur.id_fournisseur}>
-                    {fournisseur.nom_societe}
+          {/* ── Cascading: Établissement → Bâtiment → Service ── */}
+          <label style={labelStyle}>
+            Établissement
+            <select
+              style={inputStyle}
+              value={form.id_etablissement}
+              onChange={(e) => setField('id_etablissement', e.target.value)}
+            >
+              <option value="">-- Choisir un établissement --</option>
+              {etablissements.map((et) => {
+                const etabId = et.idEtablissement ?? et.id_etablissement;
+                return (
+                  <option key={etabId} value={etabId}>
+                    {et.nom}
                   </option>
-                ))}
-              </select>
-              {errors.id_fournisseur ? <span style={errorTextStyle}>{errors.id_fournisseur}</span> : null}
-            </label>
-          ) : (
-            <>
-              {/* ── Cascading: Établissement → Bâtiment → Service ── */}
-              <label style={labelStyle}>
-                Établissement
-                <select
-                  style={inputStyle}
-                  value={form.id_etablissement}
-                  onChange={(e) => setField('id_etablissement', e.target.value)}
-                >
-                  <option value="">-- Choisir un établissement --</option>
-                  {etablissements.map((et) => {
-                    const etabId = et.idEtablissement ?? et.id_etablissement;
-                    return (
-                      <option key={etabId} value={etabId}>
-                        {et.nom}
-                      </option>
-                    );
-                  })}
-                </select>
-                {errors.id_etablissement ? <span style={errorTextStyle}>{errors.id_etablissement}</span> : null}
-              </label>
+                );
+              })}
+            </select>
+            {errors.id_etablissement ? <span style={errorTextStyle}>{errors.id_etablissement}</span> : null}
+          </label>
 
-              <label style={labelStyle}>
-                Bâtiment
-                <select
-                  style={inputStyle}
-                  value={form.id_batiment}
-                  onChange={(e) => setField('id_batiment', e.target.value)}
-                  disabled={!form.id_etablissement}
-                >
-                  <option value="">
-                    {form.id_etablissement ? '-- Choisir un bâtiment --' : '-- Sélectionner un établissement d\'abord --'}
+          <label style={labelStyle}>
+            Bâtiment
+            <select
+              style={inputStyle}
+              value={form.id_batiment}
+              onChange={(e) => setField('id_batiment', e.target.value)}
+              disabled={!form.id_etablissement}
+            >
+              <option value="">
+                {form.id_etablissement ? '-- Choisir un bâtiment --' : '-- Sélectionner un établissement d\'abord --'}
+              </option>
+              {filteredBatiments.map((b) => {
+                const batId = b.idBatiment ?? b.id_batiment;
+                return (
+                  <option key={batId} value={batId}>
+                    {b.nom}
                   </option>
-                  {filteredBatiments.map((b) => {
-                    const batId = b.idBatiment ?? b.id_batiment;
-                    return (
-                      <option key={batId} value={batId}>
-                        {b.nom}
-                      </option>
-                    );
-                  })}
-                </select>
-                {errors.id_batiment ? <span style={errorTextStyle}>{errors.id_batiment}</span> : null}
-              </label>
+                );
+              })}
+            </select>
+            {errors.id_batiment ? <span style={errorTextStyle}>{errors.id_batiment}</span> : null}
+          </label>
 
-              <label style={labelStyle}>
-                Service
-                <select
-                  style={inputStyle}
-                  value={form.id_service}
-                  onChange={(e) => setField('id_service', e.target.value)}
-                  disabled={!form.id_batiment}
-                >
-                  <option value="">
-                    {form.id_batiment ? '-- Choisir un service --' : '-- Sélectionner un bâtiment d\'abord --'}
+          <label style={labelStyle}>
+            Service
+            <select
+              style={inputStyle}
+              value={form.id_service}
+              onChange={(e) => setField('id_service', e.target.value)}
+              disabled={!form.id_batiment}
+            >
+              <option value="">
+                {form.id_batiment ? '-- Choisir un service --' : '-- Sélectionner un bâtiment d\'abord --'}
+              </option>
+              {filteredServices.map((service) => {
+                const svcId = service.id_service ?? service.idService;
+                return (
+                  <option key={svcId} value={svcId}>
+                    {service.nom_service}
                   </option>
-                  {filteredServices.map((service) => {
-                    const svcId = service.id_service ?? service.idService;
-                    return (
-                      <option key={svcId} value={svcId}>
-                        {service.nom_service}
-                      </option>
-                    );
-                  })}
-                </select>
-                {errors.id_service ? <span style={errorTextStyle}>{errors.id_service}</span> : null}
-              </label>
-            </>
-          )}
+                );
+              })}
+            </select>
+            {errors.id_service ? <span style={errorTextStyle}>{errors.id_service}</span> : null}
+          </label>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 14 }}>
@@ -308,6 +270,8 @@ const backdropStyle = {
 
 const modalStyle = {
   width: 'min(640px, 94vw)',
+  maxHeight: '90vh',
+  overflowY: 'auto',
   background: '#fff',
   borderRadius: 12,
   padding: 18,

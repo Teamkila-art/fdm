@@ -6,7 +6,7 @@ import RetourCreateModal from './RetourCreateModal';
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  green: '#0F6E56', lightGreen: '#1D9E75',
+  primary: '#6366f1', lightPrimary: '#8b5cf6',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
   radius: 12, radiusSm: 8,
@@ -203,5 +203,7 @@ const selectStyle = { border: `1px solid ${T.border}`, borderRadius: T.radiusSm,
 const filterLabel = { fontSize: 11, fontWeight: 600, color: T.textMuted, textTransform: 'uppercase', letterSpacing: '0.05em' };
 const btnPrimary  = {
   border: 'none', borderRadius: T.radiusSm, padding: '9px 16px',
-  background: T.green, color: '#fff', fontWeight: 600, fontSize: 13, cursor: 'pointer',
+  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
+  color: '#ffffff', fontWeight: 600, fontSize: 13, cursor: 'pointer',
 };

@@ -6,7 +6,7 @@ import { getDemandes } from '../../api/requests';
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf',
+  primary: '#6366f1', lightPrimary: '#8b5cf6',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
   radius: 12, radiusSm: 8,
@@ -224,4 +224,4 @@ const toolbar     = { padding: '12px 16px', background: T.bgSubtle, borderBottom
 const thStyle     = { padding: '9px 12px', fontSize: 12, fontWeight: 700, color: T.textMuted, textAlign: 'left', borderBottom: `1px solid ${T.border}`, background: T.bgSubtle };
 const tdStyle     = { padding: '10px 12px', fontSize: 13, color: T.textMid, verticalAlign: 'middle' };
 const selectStyle = { border: `1px solid ${T.border}`, borderRadius: T.radiusSm, padding: '7px 10px', fontSize: 13, color: T.textDark, background: T.bgWhite, width: '100%' };
-const linkStyle   = { color: T.lightBlue, fontWeight: 600, fontSize: 12, cursor: 'pointer' };
+const linkStyle   = { color: T.lightPrimary, fontWeight: 600, fontSize: 12, cursor: 'pointer' };

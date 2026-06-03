@@ -15,7 +15,7 @@ const C = {
   bgWhite:       '#fff',
   bgSubtle:      '#f8fafc',
   primary:       '#1e293b',
-  accent:        '#0C447C',
+  primary: '#6366f1',
   danger:        '#ef4444',
   warning:       '#f59e0b',
   warningBg:     '#fffbeb',
@@ -573,7 +573,7 @@ const fieldInputStyle = {
 // Article card
 const articleCardStyle = {
   border: `1px solid ${C.border}`,
-  borderLeft: `3px solid ${C.accent}`,
+  borderLeft: `3px solid ${C.primary}`,
   borderRadius: '0.5rem',
   padding: '1.25rem',
   display: 'grid',
@@ -601,7 +601,7 @@ const accentDotStyle = {
   width: 8,
   height: 8,
   borderRadius: '50%',
-  background: C.accent,
+  background: C.primary,
   flexShrink: 0,
 };
 

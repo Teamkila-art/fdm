@@ -35,7 +35,7 @@ import { getDashboard } from '../../api/reporting';
 import { useAuthStore } from '../../store/authStore';
 
 const STALE_TIME = 30_000;
-const CHART_COLORS = ['#1D9E75', '#9FE1CB', '#5DCAA5', '#0F6E56'];
+const CHART_COLORS = ['#8b5cf6', '#9FE1CB', '#5DCAA5', '#6366f1'];
 
 const URGENCE_BADGES = {
   normal: { label: 'Normal', bg: 'bg-surface', text: 'text-black/60' },
@@ -220,7 +220,7 @@ export default function DashboardPage() {
       iconBg: 'bg-brand-100',
       iconColor: 'text-brand-700',
       link: '/gestionnaire/stock',
-      accent: '#16a34a',
+      primary: '#6366f1',
     },
     {
       label: 'Demandes en cours',
@@ -230,7 +230,7 @@ export default function DashboardPage() {
       iconBg: 'bg-amber-50',
       iconColor: 'text-amber-600',
       link: '/gestionnaire/demandes',
-      accent: '#f59e0b',
+      primary: '#6366f1',
     },
     {
       label: 'Décharges en attente',
@@ -240,7 +240,7 @@ export default function DashboardPage() {
       iconBg: 'bg-blue-50',
       iconColor: 'text-blue-600',
       link: '/gestionnaire/decharges',
-      accent: '#3b82f6',
+      primary: '#6366f1',
     },
     {
       label: 'Alertes stock',
@@ -250,7 +250,7 @@ export default function DashboardPage() {
       iconBg: 'bg-red-50',
       iconColor: 'text-red-500',
       link: '/gestionnaire/stock',
-      accent: '#ef4444',
+      primary: '#6366f1',
     },
     {
       label: 'Marchés en attente',
@@ -260,7 +260,7 @@ export default function DashboardPage() {
       iconBg: 'bg-purple-50',
       iconColor: 'text-purple-600',
       link: '/gestionnaire/marches',
-      accent: '#a855f7',
+      primary: '#6366f1',
     },
     {
       label: 'Bons Commande en attente',
@@ -270,7 +270,7 @@ export default function DashboardPage() {
       iconBg: 'bg-indigo-50',
       iconColor: 'text-indigo-600',
       link: '/gestionnaire/bons-commande',
-      accent: '#6366f1',
+      primary: '#6366f1',
     },
     {
       label: 'Dons en attente',
@@ -280,7 +280,7 @@ export default function DashboardPage() {
       iconBg: 'bg-emerald-50',
       iconColor: 'text-emerald-600',
       link: '/gestionnaire/dons',
-      accent: '#10b981',
+      primary: '#6366f1',
     },
     {
       label: 'Délai marchés proche',
@@ -290,7 +290,7 @@ export default function DashboardPage() {
       iconBg: 'bg-orange-50',
       iconColor: 'text-orange-600',
       link: '/gestionnaire/marches',
-      accent: '#f97316',
+      primary: '#6366f1',
     },
   ];
 
@@ -406,7 +406,7 @@ export default function DashboardPage() {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               {[
-                { color: '#1D9E75', label: 'Entrées' },
+                { color: '#8b5cf6', label: 'Entrées' },
                 { color: '#9FE1CB', label: 'Sorties' },
               ].map(({ color, label }) => (
                 <div key={label} className="flex items-center gap-1.5 text-[11px] text-black/50">
@@ -449,7 +449,7 @@ export default function DashboardPage() {
                   }}
                   cursor={{ fill: 'rgba(0,0,0,0.03)' }}
                 />
-                <Area type="monotone" dataKey="entrees" stroke="#1D9E75" strokeWidth={2.5} fill="url(#acquisitionsGradient)" dot={false} activeDot={{ r: 4, fill: '#1D9E75' }} />
+                <Area type="monotone" dataKey="entrees" stroke="#1D9E75" strokeWidth={2.5} fill="url(#acquisitionsGradient)" dot={false} activeDot={{ r: 4, fill: '#8b5cf6' }} />
                 <Area type="monotone" dataKey="sorties" stroke="#9FE1CB" strokeWidth={2.5} fill="transparent" dot={false} activeDot={{ r: 4, fill: '#9FE1CB' }} />
               </AreaChart>
             </ResponsiveContainer>

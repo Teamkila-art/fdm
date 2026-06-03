@@ -7,8 +7,8 @@ import { useAuthStore } from '../../store/authStore';
 
 // ── Design tokens ─────────────────────────────────────────────────────────
 const C = {
-  green:       '#0F6E56',
-  lightGreen:  '#1D9E75',
+  primary:     '#6366f1',
+  lightPrimary:'#8b5cf6',
   textPrimary: '#0f172a',
   textSecondary:'#374151',
   textMuted:   '#64748b',
@@ -192,7 +192,7 @@ export default function RetourCreateModal({ onClose, onCreated }) {
                   <span style={{ color: C.textMuted, display: 'block', fontSize: 11, fontWeight: 500, marginBottom: 2 }}>
                     N° inventaire
                   </span>
-                  <span style={{ fontFamily: 'monospace', fontWeight: 600, color: C.green }}>
+                  <span style={{ fontFamily: 'monospace', fontWeight: 600, color: C.primary }}>
                     {selectedInstance.numero_inventaire ?? selectedInstance.numeroInventaire ?? '—'}
                   </span>
                 </div>
@@ -322,14 +322,14 @@ const headerStyle = {
 
 const headerTitleBlockStyle = {
   paddingBottom: 16,
-  borderBottom: `3px solid ${C.lightGreen}`,
+  borderBottom: `3px solid ${C.lightPrimary}`,
 };
 
 const titleStyle = {
   margin: 0,
   fontSize: '1.125rem',
   fontWeight: 700,
-  color: C.green,
+  color: C.primary,
 };
 
 const closeBtnStyle = {
@@ -404,6 +404,7 @@ const btnCancel = {
 
 const btnSubmit = {
   ...btnBase,
-  background: C.green,
-  color: '#fff',
+  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
+  color: '#ffffff',
 };

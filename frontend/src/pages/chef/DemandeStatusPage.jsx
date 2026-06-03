@@ -8,8 +8,8 @@ import { getDemandeById } from '../../api/requests';
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  green:     '#0F6E56',
-  lightGreen:'#1D9E75',
+  primary:   '#6366f1',
+  lightPrimary:'#8b5cf6',
   textDark:  '#0f172a',
   textMid:   '#374151',
   textMuted: '#64748b',
@@ -175,8 +175,8 @@ export default function DemandeStatusPage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 10 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-              <span style={{ fontSize: 20, color: T.green }}>&#9641;</span>
-              <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: T.green }}>{nom}</h1>
+              <span style={{ fontSize: 20, color: T.primary }}>&#9641;</span>
+              <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: T.primary }}>{nom}</h1>
             </div>
             <div style={{ fontSize: 13, color: T.textMuted }}>
               Soumise le {fmtDate(dateD)} · Service : {service}
@@ -187,7 +187,7 @@ export default function DemandeStatusPage() {
             <Pill map={STATUT_MAP}  value={statut}  />
           </div>
         </div>
-        <div style={{ height: 3, background: T.lightGreen, borderRadius: 2, margin: '14px -24px 0' }} />
+        <div style={{ height: 3, background: T.lightPrimary, borderRadius: 2, margin: '14px -24px 0' }} />
       </div>
 
       {/* ── Stepper ── */}
@@ -202,7 +202,7 @@ export default function DemandeStatusPage() {
           <div style={{
             position: 'absolute', top: 14, left: '8.33%',
             width: `${Math.min(stepIndex / (STEPS.length - 1), 1) * 83.34}%`,
-            height: 2, background: T.lightGreen, borderRadius: 1,
+            height: 2, background: T.lightPrimary, borderRadius: 1,
             transition: 'width 0.4s ease',
           }} />
 
@@ -214,19 +214,19 @@ export default function DemandeStatusPage() {
                 <div key={label} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
                   <div style={{
                     width: 28, height: 28, borderRadius: '50%',
-                    background: done ? T.green : T.bgWhite,
-                    border: `2px solid ${done ? T.green : T.border}`,
+                    background: done ? T.primary : T.bgWhite,
+                    border: `2px solid ${done ? T.primary : T.border}`,
                     color: done ? '#fff' : T.textMuted,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 11, fontWeight: 700,
-                    boxShadow: current ? `0 0 0 3px ${T.lightGreen}33` : 'none',
+                    boxShadow: current ? `0 0 0 3px ${T.lightPrimary}33` : 'none',
                     zIndex: 1, position: 'relative',
                   }}>
                     {done ? '✓' : index + 1}
                   </div>
                   <div style={{
                     fontSize: 11, fontWeight: current ? 700 : 500,
-                    color: done ? T.green : T.textMuted,
+                    color: done ? T.primary : T.textMuted,
                     lineHeight: '14px', maxWidth: 72, textAlign: 'center',
                   }}>
                     {label}
@@ -294,7 +294,7 @@ export default function DemandeStatusPage() {
             <div>
               <h3 style={{ ...sectionTitle, marginBottom: 6 }}>Décharge</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                <span style={{ fontFamily: 'monospace', fontWeight: 700, color: T.green, fontSize: 14 }}>
+                <span style={{ fontFamily: 'monospace', fontWeight: 700, color: T.primary, fontSize: 14 }}>
                   {_dnum(decharge) || '—'}
                 </span>
                 <Pill map={SIG_MAP} value={sig} />
@@ -343,7 +343,7 @@ export default function DemandeStatusPage() {
                   gap: 12,
                 }}>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: T.lightGreen, marginTop: 4, flexShrink: 0 }} />
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: T.lightPrimary, marginTop: 4, flexShrink: 0 }} />
                     <span style={{ fontSize: 13, fontWeight: 600, color: T.textDark }}>{n.titre ?? n.title ?? '—'}</span>
                   </div>
                   <span style={{ fontSize: 12, color: T.textMuted, whiteSpace: 'nowrap', flexShrink: 0 }}>
@@ -366,5 +366,5 @@ const sectionTitle = { margin: 0, fontSize: 15, fontWeight: 600, color: T.textDa
 const thStyle      = { padding: '9px 12px', fontSize: 12, fontWeight: 600, color: T.textMuted, textAlign: 'left', borderBottom: `1px solid ${T.border}` };
 const tdStyle      = { padding: '10px 12px', verticalAlign: 'middle' };
 const btnBase      = { border: 'none', borderRadius: T.radiusSm, padding: '8px 16px', fontSize: 13, fontWeight: 600, cursor: 'pointer', lineHeight: '20px' };
-const btnPrimary   = { ...btnBase, background: T.green, color: '#fff' };
+const btnPrimary   = { ...btnBase, background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)', color: '#ffffff' };
 const btnOutline   = { ...btnBase, border: `1px solid ${T.border}`, background: T.bgWhite, color: T.textMid };

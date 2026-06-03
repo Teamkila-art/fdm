@@ -5,7 +5,7 @@ import { downloadDechargeAuto, getDechargeById, getSignatureDetail } from '../..
 
 // ── Design tokens ─────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf', green: '#16a34a',
+  primary: '#6366f1', lightPrimary: '#8b5cf6', primary: '#6366f1',
   amber: '#f59e0b', red: '#dc2626',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
@@ -96,19 +96,19 @@ export default function ChefDechargeDetailPage() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 20, color: T.blue }}>&#9641;</span>
-            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: T.blue }}>
+            <span style={{ fontSize: 20, color: T.primary }}>&#9641;</span>
+            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: T.primary }}>
               Décharge {_num(decharge)}
             </h1>
           </div>
           <Link
             to={`/chef/demandes/${_demId(decharge)}`}
-            style={{ fontSize: 13, color: T.lightBlue, textDecoration: 'none', fontWeight: 500 }}
+            style={{ fontSize: 13, color: T.lightPrimary, textDecoration: 'none', fontWeight: 500 }}
           >
             ← Demande {demRef(decharge)}
           </Link>
         </div>
-        <div style={{ height: 3, background: T.lightBlue, borderRadius: 2, margin: '0 -24px' }} />
+        <div style={{ height: 3, background: T.lightPrimary, borderRadius: 2, margin: '0 -24px' }} />
       </div>
 
       {/* ── Info grid ── */}

@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf',
+  primary: '#6366f1', lightPrimary: '#8b5cf6',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
   radius: 12, radiusSm: 8,
@@ -214,7 +214,7 @@ export default function ImportExcelPage() {
       {/* ── Header ── */}
       <div style={{ background: T.bgWhite, border: `1px solid ${T.border}`, borderRadius: T.radius, padding: '20px 24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <FileSpreadsheet size={24} color={T.blue} />
+          <FileSpreadsheet size={24} color={T.primary} />
           <div>
             <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: T.textDark }}>
               Extraction de données
@@ -233,7 +233,7 @@ export default function ImportExcelPage() {
         <div
           {...dropzone.getRootProps()}
           style={{
-            border: `2px dashed ${dropzone.isDragActive ? T.lightBlue : T.border}`,
+            border: `2px dashed ${dropzone.isDragActive ? T.lightPrimary : T.border}`,
             borderRadius: T.radius,
             padding: 28,
             textAlign: 'center',
@@ -244,7 +244,7 @@ export default function ImportExcelPage() {
         >
           <input {...dropzone.getInputProps()} />
           <div style={{ display: 'grid', placeItems: 'center', gap: 10 }}>
-            <UploadCloud size={34} color={dropzone.isDragActive ? T.lightBlue : T.textMuted} />
+            <UploadCloud size={34} color={dropzone.isDragActive ? T.lightPrimary : T.textMuted} />
             <div style={{ fontSize: 13, color: file ? T.textDark : T.textMuted, fontWeight: file ? 600 : 400 }}>
               {file
                 ? `Fichier sélectionné : ${file.name}`
@@ -271,7 +271,7 @@ export default function ImportExcelPage() {
                   value={value}
                   checked={sourceType === value}
                   onChange={(e) => setSourceType(e.target.value)}
-                  style={{ accentColor: T.blue }}
+                  style={{ accentColor: T.primary }}
                 />
                 {label}
               </label>

@@ -7,7 +7,7 @@ import { IMPORT_STATUT_LABELS, StatusBadge } from '@/constants/statuts.jsx';
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf',
+  primary: '#6366f1', lightPrimary: '#8b5cf6',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
   radius: 12, radiusSm: 8,
@@ -126,5 +126,5 @@ const tableShell  = { border: `1px solid ${T.border}`, borderRadius: T.radius, o
 const thStyle     = { padding: '9px 12px', fontSize: 12, fontWeight: 700, color: T.textMuted, textAlign: 'left', borderBottom: `1px solid ${T.border}`, background: T.bgSubtle };
 const tdStyle     = { padding: '10px 12px', fontSize: 13, color: T.textMid, verticalAlign: 'middle' };
 const selectStyle = { border: `1px solid ${T.border}`, borderRadius: T.radiusSm, padding: '7px 10px', fontSize: 13, color: T.textDark, background: T.bgWhite };
-const btnReviser  = { border: `1px solid ${T.lightBlue}`, borderRadius: T.radiusSm, padding: '5px 12px', background: T.bgWhite, color: T.lightBlue, cursor: 'pointer', fontWeight: 600, fontSize: 12 };
+const btnReviser  = { border: `1px solid ${T.lightPrimary}`, borderRadius: T.radiusSm, padding: '5px 12px', background: T.bgWhite, color: T.lightPrimary, cursor: 'pointer', fontWeight: 600, fontSize: 12 };
 const btnVoir     = { border: `1px solid ${T.border}`, borderRadius: T.radiusSm, padding: '5px 12px', background: T.bgWhite, color: T.textMuted, cursor: 'pointer', fontWeight: 600, fontSize: 12 };

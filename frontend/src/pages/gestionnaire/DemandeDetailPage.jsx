@@ -9,9 +9,9 @@ import DechargePrintModal from './DechargePrintModal';
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  blue:      '#0C447C',
-  lightBlue: '#1a7abf',
-  green:     '#16a34a',
+  primary: '#6366f1',
+  lightPrimary: '#8b5cf6',
+  primary: '#6366f1',
   orange:    '#f97316',
   amber:     '#f59e0b',
   red:       '#dc2626',
@@ -52,7 +52,7 @@ function demandeRef(d) {
 
 // 0% = red, 1–49% = amber, 50–99% = orange, 100% = green
 function availColor(pct) {
-  if (pct >= 100) return T.green;
+  if (pct >= 100) return T.primary;
   if (pct >= 50)  return T.orange;
   if (pct > 0)    return T.amber;
   return T.red;
@@ -141,12 +141,12 @@ function ConsommableBlock({ ligne, stockMap, selection, onChange, readOnly }) {
   return (
     <div style={expandBodyStyle}>
       <div style={{ display: 'flex', gap: 32, alignItems: 'flex-end', flexWrap: 'wrap' }}>
-        <Stat label="Stock disponible" value={dispo} color={dispo > 0 ? T.green : T.red} />
+        <Stat label="Stock disponible" value={dispo} color={dispo > 0 ? T.primary : T.red} />
         <Stat label="Qté demandée" value={_qd(ligne)} color={T.textDark} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <span style={statLabelStyle}>Qté à servir</span>
           {readOnly ? (
-            <span style={{ fontSize: 22, fontWeight: 700, color: T.lightBlue, lineHeight: '30px' }}>{qa}</span>
+            <span style={{ fontSize: 22, fontWeight: 700, color: T.lightPrimary, lineHeight: '30px' }}>{qa}</span>
           ) : (
             <input
               type="number" min={0} max={maxServe} value={qa}
@@ -156,8 +156,8 @@ function ConsommableBlock({ ligne, stockMap, selection, onChange, readOnly }) {
               }}
               style={{
                 width: 80, height: 38, textAlign: 'center',
-                fontSize: 15, fontWeight: 700, color: T.lightBlue,
-                border: `2px solid ${T.lightBlue}`, borderRadius: T.radiusXs,
+                fontSize: 15, fontWeight: 700, color: T.lightPrimary,
+                border: `2px solid ${T.lightPrimary}`, borderRadius: T.radiusXs,
                 outline: 'none', background: T.bgWhite,
               }}
             />
@@ -216,7 +216,7 @@ function BienInventaireBlock({ ligne, selection, onChange, readOnly }) {
   return (
     <div style={expandBodyStyle}>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
-        <span style={{ fontSize: 13, fontWeight: 600, color: selectedIds.length === maxQty ? T.green : T.lightBlue }}>
+        <span style={{ fontSize: 13, fontWeight: 600, color: selectedIds.length === maxQty ? T.primary : T.lightPrimary }}>
           {selectedIds.length} / {maxQty} sélectionnée{maxQty > 1 ? 's' : ''}
         </span>
       </div>
@@ -429,16 +429,16 @@ export default function DemandeDetailPage() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 20, color: T.blue }}>&#9641;</span>
-            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: T.blue }}>
+            <span style={{ fontSize: 20, color: T.primary }}>&#9641;</span>
+            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: T.primary }}>
               Détails de la Demande
             </h1>
           </div>
-          <span style={{ fontSize: 13, fontWeight: 600, color: T.lightBlue }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: T.lightPrimary }}>
             # Référence : {demandeRef(demande)}
           </span>
         </div>
-        <div style={{ height: 3, background: T.lightBlue, borderRadius: 2, margin: '0 -24px' }} />
+        <div style={{ height: 3, background: T.lightPrimary, borderRadius: 2, margin: '0 -24px' }} />
       </div>
 
       {/* ── Décharge auto-créée ── */}
@@ -449,7 +449,7 @@ export default function DemandeDetailPage() {
           background: '#f0fdf4', border: '1px solid #86efac',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <span style={{ fontSize: 18, color: T.green }}>✓</span>
+            <span style={{ fontSize: 18, color: T.primary }}>✓</span>
             <span style={{ fontSize: 14, fontWeight: 600, color: '#14532d' }}>
               Demande traitée — une décharge a été générée automatiquement.
             </span>
@@ -457,9 +457,9 @@ export default function DemandeDetailPage() {
           <Link
             to={`/gestionnaire/decharges/${createdDechargeId}`}
             style={{
-              fontSize: 13, fontWeight: 600, color: T.green,
+              fontSize: 13, fontWeight: 600, color: T.primary,
               textDecoration: 'none', whiteSpace: 'nowrap',
-              padding: '6px 14px', border: `1px solid ${T.green}`,
+              padding: '6px 14px', border: `1px solid ${T.primary}`,
               borderRadius: T.radiusSm, background: T.bgWhite,
             }}
           >
@@ -517,7 +517,7 @@ export default function DemandeDetailPage() {
                 key={lid}
                 style={{
                   ...articleCard,
-                  borderColor: canExpand && expanded ? T.lightBlue : T.border,
+                  borderColor: canExpand && expanded ? T.lightPrimary : T.border,
                 }}
               >
                 <div
@@ -535,7 +535,7 @@ export default function DemandeDetailPage() {
                     <div style={{ fontSize: 13, color: T.textMuted, marginTop: 4 }}>Référence : {ref}</div>
                     <div style={{ fontSize: 13, color: T.textMuted, marginTop: 2 }}>
                       Qté demandée : <strong style={{ color: T.textMid }}>{_qd(ligne)}</strong>
-                      {isCons && <> · Stock : <strong style={{ color: (stockMap.get(Number(_rid(ligne))) ?? 0) > 0 ? T.green : T.red }}>{stockMap.get(Number(_rid(ligne))) ?? 0}</strong></>}
+                      {isCons && <> · Stock : <strong style={{ color: (stockMap.get(Number(_rid(ligne))) ?? 0) > 0 ? T.primary : T.red }}>{stockMap.get(Number(_rid(ligne))) ?? 0}</strong></>}
                     </div>
                   </div>
                   <AvailBar pct={pct} />
@@ -590,7 +590,7 @@ export default function DemandeDetailPage() {
         const decisionColor = selectedStatut === 'refuse' ? T.red
           : selectedStatut === 'en_instance' ? T.orange
           : totalAcc === 0 ? T.textMuted
-          : T.green;
+          : T.primary;
         return (
           <div style={{
             ...card,
@@ -766,4 +766,4 @@ const tdStyle = { padding: '10px 12px', fontSize: 13, color: T.textMid, vertical
 const btnBase    = { border: 'none', borderRadius: T.radiusSm, padding: '9px 18px', fontSize: 14, fontWeight: 600, cursor: 'pointer', lineHeight: '20px' };
 const btnOutline = { ...btnBase, border: `1px solid ${T.border}`, background: T.bgWhite, color: T.textMuted };
 const btnAmber   = { ...btnBase, border: '1px solid #fcd34d', background: '#fffbeb', color: '#92400e' };
-const btnPrimary = { ...btnBase, background: T.lightBlue, color: '#fff' };
+const btnPrimary = { ...btnBase, background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)', color: '#ffffff' };

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AlertTriangle, Bell, CheckCheck, CheckCircle, ExternalLink, Info, Package } from 'lucide-react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
 
 import {
   getNotifications,
@@ -12,7 +13,7 @@ import {
 
 // ── Design tokens ──────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf',
+  primary: '#6366f1', lightPrimary: '#8b5cf6',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
   radius: 12, radiusSm: 8,
@@ -72,6 +73,8 @@ function groupNotifications(notifs) {
 export default function NotificationBell() {
   const navigate     = useNavigate();
   const queryClient  = useQueryClient();
+  const user         = useAuthStore((s) => s.user);
+  const role         = user?.id_role?.nom_role ?? user?.role;
   const wrapperRef   = useRef(null);
   const [open, setOpen]   = useState(false);
   const [limit, setLimit] = useState(10);
@@ -146,7 +149,12 @@ export default function NotificationBell() {
   }
 
   function handleSeeAll() {
-    navigate('/gestionnaire/alertes');
+    const dest =
+      role === 'service_financiere' ? '/financiere/alertes'
+      : role === 'chef_service'     ? '/chef/notifications'
+      : role === 'admin'            ? '/admin/notifications'
+      :                               '/gestionnaire/alertes';
+    navigate(dest);
     setOpen(false);
     setLimit(10);
   }
@@ -163,7 +171,7 @@ export default function NotificationBell() {
         style={{
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
           width: 44, height: 44, borderRadius: 10, position: 'relative',
-          color: open ? T.blue : 'rgba(0,0,0,0.45)',
+          color: open ? T.primary : 'rgba(0,0,0,0.45)',
           background: open ? 'rgba(12,68,124,0.08)' : 'transparent',
           border: 'none', cursor: 'pointer', transition: 'all 0.15s',
         }}
@@ -223,7 +231,7 @@ export default function NotificationBell() {
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 5,
                   background: 'none', border: 'none', cursor: 'pointer',
-                  color: T.lightBlue, fontSize: 12, fontWeight: 600,
+                  color: T.lightPrimary, fontSize: 12, fontWeight: 600,
                   padding: '4px 8px', borderRadius: 6,
                   opacity: markAllMutation.isPending ? 0.5 : 1,
                 }}
@@ -313,7 +321,7 @@ export default function NotificationBell() {
                           {!lu && (
                             <span style={{
                               width: 7, height: 7, borderRadius: '50%',
-                              background: T.blue, flexShrink: 0, marginTop: 11,
+                              background: T.primary, flexShrink: 0, marginTop: 11,
                             }} />
                           )}
                         </button>
@@ -331,7 +339,7 @@ export default function NotificationBell() {
                       display: 'block', width: '100%', padding: '10px',
                       background: 'none', border: 'none',
                       borderBottom: `1px solid ${T.border}`,
-                      cursor: 'pointer', color: T.lightBlue,
+                      cursor: 'pointer', color: T.lightPrimary,
                       fontSize: 13, fontWeight: 600, textAlign: 'center',
                     }}
                   >
@@ -356,7 +364,7 @@ export default function NotificationBell() {
               style={{
                 background: 'none', border: 'none', cursor: 'pointer',
                 display: 'inline-flex', alignItems: 'center', gap: 5,
-                color: T.blue, fontSize: 13, fontWeight: 600, padding: '4px 8px',
+                color: T.primary, fontSize: 13, fontWeight: 600, padding: '4px 8px',
                 borderRadius: 6,
               }}
             >

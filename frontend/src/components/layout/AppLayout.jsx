@@ -52,9 +52,6 @@ const sidebarConfig = {
     { label: 'Personnel', path: '/chef/personnel', icon: Users },
     { label: 'Profil', path: '/chef/profil', icon: User },
   ],
-  fournisseur: [
-    { label: 'Marchés', path: '/fournisseur/marches', icon: ShoppingBag },
-  ],
   admin: [
     { label: 'Utilisateurs', path: '/admin/utilisateurs', icon: Users },
     { label: 'Services', path: '/admin/services', icon: Settings },
@@ -86,6 +83,7 @@ const PAGE_TITLES = {
   '/chef/decharges': 'Décharges',
   '/chef/retours': 'Retours',
   '/chef/personnel': 'Personnel',
+  '/chef/notifications': 'Notifications',
   '/chef/profil': 'Profil',
   '/admin/utilisateurs': 'Utilisateurs',
   '/admin/services': 'Services',
@@ -93,6 +91,7 @@ const PAGE_TITLES = {
   '/admin/categories': 'Catégories',
   '/admin/beneficiaires': 'Bénéficiaires',
   '/admin/types': 'Types Dynamiques',
+  '/admin/notifications': 'Notifications',
   '/admin/journal': 'Journal',
 };
 
@@ -127,7 +126,7 @@ export default function AppLayout() {
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          background: '#1e2a3a',
+          background: '#1e1b4b',
           borderRight: '1px solid rgba(255,255,255,0.05)',
         }}
       >
@@ -144,7 +143,7 @@ export default function AppLayout() {
                 width: 34,
                 height: 34,
                 borderRadius: 10,
-                background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+                background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -207,8 +206,8 @@ export default function AppLayout() {
                   width: '100%',
                   textAlign: 'left',
                   transition: 'all 0.15s ease',
-                  background: isActive ? 'rgba(59,130,246,0.15)' : 'transparent',
-                  color: isActive ? '#6ee7b7' : 'rgba(255,255,255,0.5)',
+                  background: isActive ? 'rgba(124,58,237,0.15)' : 'transparent',
+                  color: isActive ? '#a78bfa' : 'rgba(255,255,255,0.5)',
                 }}
                 onMouseEnter={(event) => {
                   if (!isActive) {
@@ -243,13 +242,13 @@ export default function AppLayout() {
           <div
             style={{
               display: 'inline-block',
-              background: 'rgba(59,130,246,0.15)',
-              color: '#93c5fd',
+              background: 'rgba(124,58,237,0.15)',
+              color: '#a78bfa',
               fontSize: 11,
               fontWeight: 500,
               padding: '3px 10px',
               borderRadius: 20,
-              border: '1px solid rgba(59,130,246,0.25)',
+              border: '1px solid rgba(124,58,237,0.25)',
             }}
           >
             {pick(user?.role, role, 'Gestionnaire')}
@@ -274,7 +273,7 @@ export default function AppLayout() {
                   fontFamily: "'Bricolage Grotesque', sans-serif",
                   fontSize: 22,
                   fontWeight: 700,
-                  color: '#0C447C',
+                  color: '#6366f1',
                   margin: 0,
                 }}
               >

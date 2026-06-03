@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { downloadDechargeAuto } from '../../api/decharge';
 
 const T = {
-  blue:     '#0C447C',
+  primary: '#6366f1',
   textDark: '#0f172a',
   textMuted:'#64748b',
   border:   '#e2e8f0',

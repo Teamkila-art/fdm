@@ -6,8 +6,7 @@ import { downloadDechargeAuto, getDecharges } from '../../api/decharge';
 
 // ── Design tokens ─────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf', green: '#16a34a',
-  amber: '#f59e0b', red: '#dc2626',
+  primary: '#6366f1', lightPrimary: '#8b5cf6',
   textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc',
   radius: 12, radiusSm: 8,
@@ -40,8 +39,8 @@ const STATUT_BADGE = {
   non_generee: { label: 'Non généré', bg: '#f1f5f9', color: '#475569', border: '#cbd5e1' },
   non_signe:   { label: 'Non signé',  bg: '#fef3c7', color: '#92400e', border: '#fcd34d' },
   en_attente:  { label: 'Non signé',  bg: '#fef3c7', color: '#92400e', border: '#fcd34d' },
-  signe:       { label: 'Signé',      bg: '#bbf7d0', color: '#14532d', border: '#86efac' },
-  valide:      { label: 'Signé',      bg: '#bbf7d0', color: '#14532d', border: '#86efac' },
+  signe:       { label: 'Signé',      bg: '#e0e7ff', color: '#4f46e5', border: '#c7d2fe' },
+  valide:      { label: 'Signé',      bg: '#e0e7ff', color: '#4f46e5', border: '#c7d2fe' },
   rejete:      { label: 'Rejeté',     bg: '#fee2e2', color: '#991b1b', border: '#fca5a5' },
 };
 
@@ -103,7 +102,7 @@ export default function DechargesPage() {
                     style={{ borderTop: `1px solid ${T.border}`, cursor: 'pointer' }}
                     onClick={() => navigate(`/chef/decharges/${did}`)}
                   >
-                    <td style={{ ...tdStyle, fontWeight: 600, fontFamily: 'monospace', color: T.blue }}>{_num(row)}</td>
+                    <td style={{ ...tdStyle, fontWeight: 600, fontFamily: 'monospace', color: T.primary }}>{_num(row)}</td>
                     <td style={tdStyle}>{fmtDate(_date(row))}</td>
                     <td style={{ ...tdStyle, fontSize: 13, color: T.textMuted }}>{articleResume(row.lignes)}</td>
                     <td style={tdStyle}>
@@ -144,5 +143,5 @@ export default function DechargesPage() {
 const thStyle    = { padding: '10px 12px', fontWeight: 600, color: T.textMuted, fontSize: 13 };
 const tdStyle    = { padding: '10px 12px', color: T.textMid };
 const btnBase    = { border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 12, fontWeight: 600, cursor: 'pointer', lineHeight: '18px' };
-const btnLink    = { ...btnBase, background: 'transparent', color: T.lightBlue, textDecoration: 'underline' };
+const btnLink    = { ...btnBase, background: 'transparent', color: T.primary, textDecoration: 'underline' };
 const btnOutline = { ...btnBase, border: `1px solid ${T.border}`, background: T.bgWhite, color: T.textMid };

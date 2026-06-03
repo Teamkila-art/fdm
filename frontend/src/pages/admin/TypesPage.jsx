@@ -3,10 +3,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus, Pencil, Trash2, Search, Settings } from 'lucide-react';
 
 import {
-  getTypesService,
-  createTypeService,
-  updateTypeService,
-  deleteTypeService,
   getTypesBeneficiaire,
   createTypeBeneficiaire,
   updateTypeBeneficiaire,
@@ -65,47 +61,16 @@ function TypeFormModal({ mode, initialData, typeLabel, onClose, onSubmit, isSubm
 // ── MAIN COMPONENT ──────────────────────────────────────────────────────────
 export default function TypesPage() {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState('service'); // 'service' | 'beneficiaire'
   const [searchQuery, setSearchQuery] = useState('');
   const [modalMode, setModalMode] = useState('closed'); // 'closed' | 'create' | 'edit'
   const [selectedItem, setSelectedItem] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
 
   // Queries
-  const serviceTypesQ = useQuery({
-    queryKey: ['users', 'types-service'],
-    queryFn: () => getTypesService().then((r) => r.data),
-    staleTime: 30000,
-  });
-
   const benefTypesQ = useQuery({
     queryKey: ['users', 'types-beneficiaire'],
     queryFn: () => getTypesBeneficiaire().then((r) => r.data),
     staleTime: 30000,
-  });
-
-  // Mutations - Service Types
-  const createServiceTypeM = useMutation({
-    mutationFn: createTypeService,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users', 'types-service'] });
-      closeModal();
-    },
-  });
-
-  const updateServiceTypeM = useMutation({
-    mutationFn: ({ id, data }) => updateTypeService(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users', 'types-service'] });
-      closeModal();
-    },
-  });
-
-  const deleteServiceTypeM = useMutation({
-    mutationFn: deleteTypeService,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users', 'types-service'] });
-    },
   });
 
   // Mutations - Beneficiary Types
@@ -132,7 +97,6 @@ export default function TypesPage() {
     },
   });
 
-  const serviceTypes = useMemo(() => serviceTypesQ.data || [], [serviceTypesQ.data]);
   const benefTypes = useMemo(() => benefTypesQ.data || [], [benefTypesQ.data]);
 
   // Modals management
@@ -152,20 +116,11 @@ export default function TypesPage() {
   async function handleSubmit(payload, { setError }) {
     setErrorMsg('');
     try {
-      if (activeTab === 'service') {
-        if (modalMode === 'create') {
-          await createServiceTypeM.mutateAsync(payload);
-        } else if (selectedItem) {
-          const id = selectedItem.id_type_service;
-          await updateServiceTypeM.mutateAsync({ id, data: payload });
-        }
-      } else {
-        if (modalMode === 'create') {
-          await createBenefTypeM.mutateAsync(payload);
-        } else if (selectedItem) {
-          const id = selectedItem.id_type_beneficiaire;
-          await updateBenefTypeM.mutateAsync({ id, data: payload });
-        }
+      if (modalMode === 'create') {
+        await createBenefTypeM.mutateAsync(payload);
+      } else if (selectedItem) {
+        const id = selectedItem.id_type_beneficiaire;
+        await updateBenefTypeM.mutateAsync({ id, data: payload });
       }
     } catch (err) {
       const d = err?.response?.data;
@@ -180,41 +135,31 @@ export default function TypesPage() {
   // Delete handler
   function handleDelete(item) {
     const name = item.nom;
-    if (activeTab === 'service') {
-      const id = item.id_type_service;
-      if (window.confirm(`Supprimer le type de service "${name}" ?`)) {
-        deleteServiceTypeM.mutate(id);
-      }
-    } else {
-      const id = item.id_type_beneficiaire;
-      if (window.confirm(`Supprimer le type de bénéficiaire "${name}" ?`)) {
-        deleteBenefTypeM.mutate(id);
-      }
+    const id = item.id_type_beneficiaire;
+    if (window.confirm(`Supprimer le type de bénéficiaire "${name}" ?`)) {
+      deleteBenefTypeM.mutate(id);
     }
   }
 
   // Filtered lists
   const filteredList = useMemo(() => {
-    const list = activeTab === 'service' ? serviceTypes : benefTypes;
     const q = searchQuery.toLowerCase().trim();
-    if (!q) return list;
-    return list.filter((item) => (item.nom || '').toLowerCase().includes(q));
-  }, [activeTab, serviceTypes, benefTypes, searchQuery]);
+    if (!q) return benefTypes;
+    return benefTypes.filter((item) => (item.nom || '').toLowerCase().includes(q));
+  }, [benefTypes, searchQuery]);
 
-  const isLoading = serviceTypesQ.isLoading || benefTypesQ.isLoading;
+  const isLoading = benefTypesQ.isLoading;
   const isSubmitting =
-    createServiceTypeM.isPending ||
-    updateServiceTypeM.isPending ||
     createBenefTypeM.isPending ||
     updateBenefTypeM.isPending;
 
-  const currentLabel = activeTab === 'service' ? 'type de service' : 'type de bénéficiaire';
+  const currentLabel = 'type de bénéficiaire';
 
   return (
     <div style={{ display: 'grid', gap: 16 }}>
       {/* Header and Add Button */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10, color: '#0C447C' }}>
+        <h1 style={{ margin: 0, fontSize: 24, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 10, color: '#6366f1' }}>
           <Settings size={24} /> Types Dynamiques
         </h1>
         <button style={priBtn} onClick={() => openModal(null)}>
@@ -224,31 +169,6 @@ export default function TypesPage() {
 
       {/* Tabs list & Search Bar */}
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: 12, alignItems: 'center', borderBottom: '1px solid #e5e7eb', paddingBottom: 1 }}>
-        <div style={{ display: 'flex', gap: 6 }}>
-          <button
-            onClick={() => { setActiveTab('service'); setSearchQuery(''); }}
-            style={{
-              ...tabItemStyle,
-              borderBottom: activeTab === 'service' ? '3px solid #3b82f6' : '3px solid transparent',
-              color: activeTab === 'service' ? '#111827' : '#6b7280',
-              fontWeight: activeTab === 'service' ? 600 : 400,
-            }}
-          >
-            Types de Service ({serviceTypes.length})
-          </button>
-          <button
-            onClick={() => { setActiveTab('beneficiaire'); setSearchQuery(''); }}
-            style={{
-              ...tabItemStyle,
-              borderBottom: activeTab === 'beneficiaire' ? '3px solid #3b82f6' : '3px solid transparent',
-              color: activeTab === 'beneficiaire' ? '#111827' : '#6b7280',
-              fontWeight: activeTab === 'beneficiaire' ? 600 : 400,
-            }}
-          >
-            Types de Bénéficiaire ({benefTypes.length})
-          </button>
-        </div>
-
         {/* Search */}
         <div style={{ position: 'relative', width: 'min(300px, 100%)' }}>
           <Search size={16} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#9ca3af' }} />
@@ -288,7 +208,7 @@ export default function TypesPage() {
                 </tr>
               ) : (
                 filteredList.map((item) => {
-                  const id = activeTab === 'service' ? item.id_type_service : item.id_type_beneficiaire;
+                  const id = item.id_type_beneficiaire;
                   return (
                     <tr key={id} style={{ borderTop: '1px solid #f3f4f6' }}>
                       <td style={{ ...tdS, color: '#6b7280' }}>

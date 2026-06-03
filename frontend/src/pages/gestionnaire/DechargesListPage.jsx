@@ -21,7 +21,7 @@ const IconDownload = () => (
 
 // ── Design tokens ─────────────────────────────────────────────────────────
 const T = {
-  blue: '#0C447C', lightBlue: '#1a7abf', green: '#16a34a',
+  primary: '#6366f1', lightPrimary: '#8b5cf6', primary: '#6366f1',
   red: '#dc2626', textDark: '#0f172a', textMid: '#374151', textMuted: '#64748b',
   border: '#e2e8f0', bgWhite: '#ffffff', bgSubtle: '#f8fafc', radius: 12, radiusSm: 8,
 };
@@ -195,7 +195,7 @@ export default function DechargesListPage() {
                     onMouseLeave={() => setHoveredId(null)}
                     onClick={() => navigate(`/gestionnaire/decharges/${did}`)}
                   >
-                    <td style={{ ...tdStyle, fontWeight: 600, fontFamily: 'monospace', color: T.blue }}>{_num(row)}</td>
+                    <td style={{ ...tdStyle, fontWeight: 600, fontFamily: 'monospace', color: T.primary }}>{_num(row)}</td>
                     <td style={{ ...tdStyle, fontFamily: 'monospace', fontSize: 13 }}>{_demRef(row)}</td>
                     <td style={tdStyle}>{_svc(row)}</td>
                     <td style={tdStyle}>{fmtDate(_date(row))}</td>

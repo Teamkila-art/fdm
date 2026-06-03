@@ -5,8 +5,8 @@ import { getBeneficiaires, createBeneficiaire, updateBeneficiaire, deleteBenefic
 
 // ── Design tokens ─────────────────────────────────────────────────────────
 const C = {
-  green:      '#0F6E56',
-  lightGreen: '#1D9E75',
+  primary:    '#6366f1',
+  lightPrimary: '#8b5cf6',
   textDark:   '#0f172a',
   textMid:    '#374151',
   textMuted:  '#64748b',
@@ -138,7 +138,7 @@ export default function PersonnelPage() {
       <div style={card}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: C.green }}>
+            <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: C.primary }}>
               Personnel & Bénéficiaires
             </h1>
             <p style={{ margin: '4px 0 0', fontSize: 13, color: C.textMuted }}>
@@ -149,7 +149,7 @@ export default function PersonnelPage() {
             + Ajouter
           </button>
         </div>
-        <div style={{ height: 3, background: C.lightGreen, borderRadius: 2, margin: '16px -24px 0' }} />
+        <div style={{ height: 3, background: C.lightPrimary, borderRadius: 2, margin: '16px -24px 0' }} />
       </div>
 
       {/* ── Inline form ── */}
@@ -287,7 +287,9 @@ const tdStyle = {
 const btnPrimary = {
   border: 'none', borderRadius: C.radiusSm,
   padding: '9px 16px', fontSize: 13, fontWeight: 600,
-  background: C.green, color: '#fff', cursor: 'pointer',
+  background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)',
+  color: '#ffffff', cursor: 'pointer',
 };
 const btnSecondary = {
   border: `1px solid ${C.border}`, borderRadius: C.radiusSm,

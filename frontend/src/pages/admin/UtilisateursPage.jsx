@@ -5,7 +5,6 @@ import {
   createUtilisateur,
   getBatiments,
   getEtablissements,
-  getFournisseurs,
   getRoles,
   getServices,
   getUtilisateurs,
@@ -29,19 +28,11 @@ function normalizeService(raw) {
   return {
     id_service: raw.id_service ?? raw.idService ?? raw.id,
     nom_service: raw.nom_service ?? raw.nomService ?? '',
-    type_service: raw.type_service ?? raw.typeService ?? '',
     description: raw.description ?? '',
     id_batiment: raw.id_batiment ?? raw.idBatiment ?? '',
   };
 }
 
-function normalizeFournisseur(raw) {
-  if (!raw || typeof raw !== 'object') return null;
-  return {
-    id_fournisseur: raw.id_fournisseur ?? raw.idFournisseur ?? raw.id,
-    nom_societe: raw.nom_societe ?? raw.nomSociete ?? '',
-  };
-}
 
 export default function UtilisateursPage() {
   const queryClient = useQueryClient();
@@ -66,7 +57,6 @@ export default function UtilisateursPage() {
 
   const rolesQuery = useQuery({ queryKey: ['users', 'roles'], queryFn: () => getRoles(), staleTime: 300000 });
   const servicesQuery = useQuery({ queryKey: ['users', 'services'], queryFn: () => getServices(), staleTime: 300000 });
-  const fournisseursQuery = useQuery({ queryKey: ['users', 'fournisseurs'], queryFn: () => getFournisseurs(), staleTime: 300000 });
   const etablissementsQuery = useQuery({ queryKey: ['users', 'etablissements'], queryFn: () => getEtablissements(), staleTime: 300000 });
   const batimentsQuery = useQuery({ queryKey: ['users', 'batiments'], queryFn: () => getBatiments(), staleTime: 300000 });
 
@@ -95,10 +85,6 @@ export default function UtilisateursPage() {
     () => (servicesQuery.data?.data || []).map(normalizeService).filter((item) => item?.id_service),
     [servicesQuery.data?.data]
   );
-  const fournisseurs = useMemo(
-    () => (fournisseursQuery.data?.data || []).map(normalizeFournisseur).filter((item) => item?.id_fournisseur),
-    [fournisseursQuery.data?.data]
-  );
   const etablissements = useMemo(() => etablissementsQuery.data?.data || [], [etablissementsQuery.data?.data]);
   const batiments = useMemo(() => batimentsQuery.data?.data || [], [batimentsQuery.data?.data]);
 
@@ -123,7 +109,6 @@ export default function UtilisateursPage() {
           titre_poste: raw.titre_poste ?? raw.titrePoste ?? '',
           id_role: roleObj,
           id_service: serviceObj,
-          fournisseur_profile: normalizeFournisseur(raw.fournisseur_profile ?? raw.fournisseurProfile),
         };
       }),
     [rawRows, roleById, serviceById]
@@ -270,7 +255,6 @@ export default function UtilisateursPage() {
           initialData={selectedUser}
           roles={roles}
           services={services}
-          fournisseurs={fournisseurs}
           etablissements={etablissements}
           batiments={batiments}
           existingUsers={tableRows}

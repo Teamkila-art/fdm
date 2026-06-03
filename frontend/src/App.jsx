@@ -34,8 +34,6 @@ const ChefRetoursPage = React.lazy(() => import('./pages/chef/RetoursPage'));
 const ChefProfilePage = React.lazy(() => import('./pages/chef/ProfilePage'));
 const ChefPersonnelPage = React.lazy(() => import('./pages/chef/PersonnelPage'));
 const FinanciereImportExcelPage = React.lazy(() => import('./pages/financiere/ImportExcelPage'));
-const FournisseurMarchesPage = React.lazy(() => import('./pages/fournisseur/MarchesPage'));
-const FournisseurMarcheTimelinePage = React.lazy(() => import('./pages/fournisseur/MarcheTimelinePage'));
 const UtilisateursPage = React.lazy(() => import('./pages/admin/UtilisateursPage'));
 const ServicesPage = React.lazy(() => import('./pages/admin/ServicesPage'));
 const BatimentsPage = React.lazy(() => import('./pages/admin/BatimentsPage'));
@@ -47,7 +45,6 @@ const roleRoutes = [
   { path: '/gestionnaire/*', role: 'gestionnaire_magasin' },
   { path: '/financiere/*', role: 'service_financiere' },
   { path: '/chef/*', role: 'chef_service' },
-  { path: '/fournisseur/*', role: 'fournisseur' },
   { path: '/admin/*', role: 'admin' },
 ];
 
@@ -295,6 +292,14 @@ export default function App() {
             }
           />
           <Route
+            path="/chef/notifications"
+            element={
+              <ProtectedRoute requiredRole="chef_service">
+                <NotificationsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/financiere/marches"
             element={
               <ProtectedRoute requiredRole="service_financiere">
@@ -355,22 +360,6 @@ export default function App() {
             }
           />
           <Route
-            path="/fournisseur/marches"
-            element={
-              <ProtectedRoute requiredRole="fournisseur">
-                <FournisseurMarchesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/fournisseur/marches/:id"
-            element={
-              <ProtectedRoute requiredRole="fournisseur">
-                <FournisseurMarcheTimelinePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/admin/utilisateurs"
             element={
               <ProtectedRoute requiredRole="admin">
@@ -418,6 +407,14 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/notifications"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <NotificationsPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Role-based routes */}
           {roleRoutes.map(({ path, role }) => (
@@ -439,7 +436,6 @@ export default function App() {
               const role = user?.id_role?.nom_role ?? user?.role;
               if (role === 'chef_service')        return <Navigate to="/chef/demandes" replace />;
               if (role === 'service_financiere')  return <Navigate to="/financiere/marches" replace />;
-              if (role === 'fournisseur')          return <Navigate to="/fournisseur/marches" replace />;
               if (role === 'admin')                return <Navigate to="/admin/utilisateurs" replace />;
               return <Navigate to="/gestionnaire/dashboard" replace />;
             })()}
